@@ -80,6 +80,14 @@ def main():
     )
 
     parser.add_argument(
+        "-i", "--relax_intron_def",
+        required = False,
+        default = False,
+        action = "store_true",
+        help = "Relax definition of intronic regions to include even exon-overlapping parts. (legacy option)"
+    )
+
+    parser.add_argument(
         "-m", "--mc_length",
         required = False,
         type = int,
@@ -122,7 +130,7 @@ def main():
 
 
     # consistency checks:
-    
+
     print("check input files...")
 
     md5file = os.path.join(probes_name, f"{probes_name}.md5")
@@ -186,7 +194,11 @@ def main():
     # run pipeline:
 
     if cfg.annotation:
-        if cfg.run_all or not os.path.isfile(os.path.join(probes_name, genome_name, "intronic_strict.BED")):
+        if (
+            cfg.run_all
+            or not os.path.isfile(os.path.join(probes_name, genome_name, "intronic.BED"))
+            or not os.path.isfile(os.path.join(probes_name, genome_name, "intronic_strict.BED"))
+        ):
             print("extract intronic regions...")
 
             subprocess.run(
@@ -200,7 +212,7 @@ def main():
                 check=True
             )
         else:
-            print("existing intronic_strict.BED found...")
+            print("existing intronic.BED and intronic_strict.BED found...")
 
 
     db_files = [
@@ -275,7 +287,11 @@ def main():
                 cfg.probes,
                 cfg.genome,
                 os.path.join(probes_name, genome_name, "e_thresh_" + cfg.evalue, "mc_thresh_" + str(cfg.mc_length)),
-                os.path.join(probes_name, genome_name, "intronic_strict.BED")
+                os.path.join(
+                    probes_name,
+                    genome_name,
+                    "intronic.BED" if cfg.relax_intron_def else "intronic_strict.BED"
+                )
             ],
             stderr=subprocess.STDOUT,
             stdout=sys.stdout,
