@@ -1,4 +1,4 @@
-# ProbeDistiller
+# LoCoLotive
 In silico identification of low-copy nuclear loci based on published target capture probe sets and custom reference genomes.
 
 ## Requirements
