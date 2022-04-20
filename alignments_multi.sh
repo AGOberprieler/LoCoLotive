@@ -16,8 +16,8 @@ intronic=$4
 
 source utils/progress.sh
 
-rm -rf "$outdir"/{genomic_sequences,query_sequences,alignments,qcov,temp.fasta,temp.bed,introns.tmp}
-mkdir -p "$outdir"/{genomic_sequences,query_sequences,alignments,qcov}
+rm -rf "$outdir"/{genomic_sequences,query_sequences,alignments,query_coverage,temp.fasta,temp.bed,introns.tmp,summary.txt}
+mkdir -p "$outdir"/{genomic_sequences,query_sequences,alignments,query_coverage}
 
 shopt -s nullglob
 
@@ -28,12 +28,11 @@ for f in "${outdir}/genomic_ranges"/*
 do
     # extract/modify sequences
 
-    # genome ("+" strand)
-    #####################
+    # 1) genome ("+" strand)
+    ########################
 
     id=$(echo "$f" | sed 's/.*\/\([^/]\+\)\.gff3$/\1/')
 
-    # echo $id
     bedtools getfasta \
         -fi "$genome" \
         -bed "$f" \
@@ -72,8 +71,8 @@ do
         done
     fi
 
-    # query
-    #######
+    # 2) query
+    ##########
 
     bedtools getfasta \
         -s \
@@ -89,7 +88,6 @@ do
 
     # align genomic and query sequences
     mafft \
-        --op 5.0 \
         --inputorder \
         --preservecase \
         --addfragments "${outdir}/query_sequences/${id}.fasta" \
@@ -98,10 +96,21 @@ do
 
     # visualize query (marker) coverage
     fasta_formatter -i "$probes" | grep "^>${id}$" -A1 > "${outdir}/temp.fasta"
-    ./query_cov.py "${outdir}/temp.fasta" "${outdir}/query_intervals/${id}.gff3" > "${outdir}/qcov/${id}.fasta"
-
+    ./query_cov.py "${outdir}/temp.fasta" "${outdir}/query_intervals/${id}.gff3" > "${outdir}/query_coverage/${id}.fasta"
+    
     progress_bar "$iter" "$i_max" 40 processed
     (( iter++ ))
 done
+
+
+# summarize results
+###################
+
+echo -e "\nsummarize results..."
+Rscript --vanilla summarize.r "${outdir}"
+
+# sort table
+sort -k3 -k2 -nr "${outdir}/summary.txt" > "${outdir}/summary.tmp"
+mv "${outdir}/summary.tmp" "${outdir}/summary.txt"
 
 rm -rf "$outdir"/{genomic_sequences,query_sequences,temp.fasta,temp.bed,introns.tmp}

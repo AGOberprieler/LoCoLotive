@@ -1,6 +1,6 @@
 #!/bin/bash
 # run preprocess.sh first
-# input: make sure that col.1=qid, col.2=qstart, col.3=qend, col.4=chromosome, col.5=sstart, col.6=send, col.7=sstrand(+/-)!
+# input file: col.1=qid, col.2=qstart, col.3=qend, col.4=chromosome, col.5=sstart, col.6=send, col.7=sstrand(+/-)
 
 usage="usage: ./filter.sh <input file> <output directory> <mc_length>"
 
@@ -118,7 +118,7 @@ i_max=$(ls -1q "${outdir}/hits_filtered" | wc -l)
 n_removed=0
 for f in "${outdir}/hits_filtered"/*
 do
-    mc_found=$(./find_multicopy.r "$f" "$mc_length" "${outdir}/filtering.log")
+    mc_found=$(Rscript --vanilla find_multicopy.r "$f" "$mc_length" "${outdir}/filtering.log")
 
     if [ "$mc_found" -eq 1 ]
     then
@@ -139,7 +139,7 @@ if [ -z "$(ls -A "${outdir}"/hits_filtered)" ]; then
 fi
 
 # print info
-echo "number of BLAST hits per probe after filtering:"
+echo "number of BLAST hits per probe sequence after filtering:"
 wc -l "${outdir}/hits_filtered"/* | head -n-1 | awk '{print $1}' | sort -n | uniq -c | awk '{print $2" hits: "$1" probes"}'
 
 # summarize filtered blast hits, prepare input for alignments_multi.sh

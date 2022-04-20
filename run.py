@@ -212,7 +212,7 @@ def main():
                 check=True
             )
         else:
-            print("existing intronic.BED and intronic_strict.BED found...")
+            print("existing intronic.BED and intronic_strict.BED found")
 
 
     db_files = [
@@ -242,12 +242,12 @@ def main():
         )
 
     else:
-        print("existing BLAST database found...")
+        print("existing BLAST database found")
 
     if cfg.run_all or not os.path.isfile(
         os.path.join(probes_name, genome_name, "e_thresh_" + cfg.evalue, "blast_hits.txt")
     ):
-        print("BLAST probe sequences against reference genome (this may take some time)...")
+        print("\nBLAST probe sequences against reference genome (this may take some time)...")
 
         with open(os.path.join(probes_name, genome_name, "e_thresh_" + cfg.evalue, "blast_hits.txt"), "wb") as f:
             subprocess.run(
@@ -264,9 +264,9 @@ def main():
                 check=True
             )
     else:
-        print("existing BLAST results found...")
+        print("existing BLAST results found")
 
-    print("\nfilter BLAST hits...")
+    print("\nfilter probe sequences:\n")
     subprocess.run(
         [
             "./filter.sh",
