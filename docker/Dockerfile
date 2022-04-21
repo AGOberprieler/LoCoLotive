@@ -2,7 +2,10 @@ FROM debian:stable-slim
 
 WORKDIR /wd
 
-RUN apt-get update && apt install -y --no-install-recommends bedops bedtools bzip2 ca-certificates curl dirmngr genometools gpg gpg-agent mafft ncbi-blast+ python3 r-base wget
+RUN apt-get update && apt install -y --no-install-recommends bedops bedtools bzip2 ca-certificates curl dirmngr genometools gpg gpg-agent mafft ncbi-blast+ python3 r-base r-base-dev wget
+
+RUN Rscript -e 'install.packages("ape", dependencies=TRUE, repos="https://cloud.r-project.org")'
+RUN Rscript -e 'install.packages("seqinr", dependencies=TRUE, repos="https://cloud.r-project.org")'
 
 RUN wget http://hannonlab.cshl.edu/fastx_toolkit/fastx_toolkit_0.0.13_binaries_Linux_2.6_amd64.tar.bz2 \
     && tar -xjf fastx_toolkit_0.0.13_binaries_Linux_2.6_amd64.tar.bz2 \
