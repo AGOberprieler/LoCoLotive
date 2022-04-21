@@ -27,7 +27,7 @@ Note that this image does NOT support the Windows Subsystem for Linux (WSL).
 
 ## Usage
 
-The whole pipeline can be run using the main script run.py. When using the Docker image, simply prepend `./docker_run` to any command calls such as `./docker_run ./run.py -h`.
+The whole pipeline can be run using the main script run.py. When using the Docker image, simply prepend `./docker.sh` to any command calls such as `./docker.sh ./run.py -h`.
 The latter command will list all available options:
 
 ```raw
@@ -58,6 +58,8 @@ As a minimum, two FASTA files, i.e., probe sequences and reference genome, are r
 If an additional GFF3 file comprising exon information is provided via the `-a` option, intronic regions will be highlighted as uppercase in the created MSAs.
 In this case, intronic bases located between consecutive BLAST hits of the same probe sequence will also be reported in the tabular output file (summary.txt).
 
+NOTE: When using the Docker image, all input files must be placed inside the LoCoLotive directory!
+
 ## Example
 
 ### Input preparation
@@ -84,7 +86,7 @@ Now, we will run LoCoLotive with default parameters (adjust the file paths if ne
 ./run.py -a GCA_003112345.1_ASM311234v1_genomic.gff sunf.fasta GCA_003112345.1_ASM311234v1_genomic.fna
 ```
 
-Remember that you have to prepend `./docker_run ` when using the supplied Docker image.
+Remember that you have to prepend `./docker.sh ` when using the supplied Docker image.
 
 The screen output of the above command should be similar to the following:
 
