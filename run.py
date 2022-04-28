@@ -257,7 +257,7 @@ def main():
                     "-query", cfg.probes,
                     "-db", os.path.join(probes_name, genome_name, genome_fname),
                     "-evalue", cfg.evalue,
-                    "-outfmt", "7 qseqid qstart qend sseqid sstart send sstrand bitscore evalue pident length qcovhsp mismatch gapopen gaps"
+                    "-outfmt", "7 qseqid qstart qend sseqid sstart send sstrand bitscore evalue pident length qcovhsp mismatch gapopen gaps btop"
                 ],
                 stderr=subprocess.STDOUT,
                 stdout=f,

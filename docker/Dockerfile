@@ -2,7 +2,7 @@ FROM debian:stable-slim
 
 WORKDIR /wd
 
-RUN apt-get update && apt install -y --no-install-recommends bedops bedtools bzip2 ca-certificates curl dirmngr genometools gpg gpg-agent mafft ncbi-blast+ python3 r-base r-base-dev wget
+RUN apt-get update && apt install -y --no-install-recommends bedops bedtools bzip2 ca-certificates curl dirmngr gawk genometools gpg gpg-agent mafft ncbi-blast+ python3 r-base r-base-dev wget
 
 RUN Rscript -e 'install.packages("ape", dependencies=TRUE, repos="https://cloud.r-project.org")'
 RUN Rscript -e 'install.packages("seqinr", dependencies=TRUE, repos="https://cloud.r-project.org")'

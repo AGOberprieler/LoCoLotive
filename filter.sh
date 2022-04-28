@@ -144,7 +144,7 @@ wc -l "${outdir}/hits_filtered"/* | head -n-1 | awk '{print $1}' | sort -n | uni
 
 # summarize filtered blast hits, prepare input for alignments_multi.sh
 
-head -n1 "$infile" > "${outdir}/hits_filtered.csv" # write header
+grep "# Fields:" "$infile" | head -n1  > "${outdir}/hits_filtered.csv" # write header
 cat "$outdir"/hits_filtered/* >> "${outdir}/hits_filtered.csv"
 
 shopt -s nullglob
