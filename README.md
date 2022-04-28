@@ -198,9 +198,9 @@ At4g36440sunfQHK9D01_yg_ab1   230   2  93                      83
 Note that columns 4 and 5 refer to the original BLAST hits rather than the MSAs produced by MAFFT.
 If no exon annotation is provided, column 5 will only contain zeros. 
 
-For source EST *At2g40690sunfQHB1g06_yg_ab1* (see above for comparison), the output MSA looks as follows (here, the probe ID on the left has been shortened):
+For source EST *At2g40690sunfQHB1g06_yg_ab1* (see above for comparison), the output MSA looks as follows:
 
-![QHB1g06_yg_ab1_1_short.png](images/QHB1g06_yg_ab1_1_short.png)
+![At2g40690sunfQHB1g06_yg_ab1_short.png](images/At2g40690sunfQHB1g06_yg_ab1_short.png)
 
 The first sequence is part of the referene genome while the other ones represent matched parts of *At2g40690sunfQHB1g06_yg_ab1*.
 Note that the latter sequences have been reverse-complemented as indicated by the minus signs.
