@@ -16,7 +16,7 @@ intronic=$4
 
 source utils/progress.sh
 
-rm -rf "$outdir"/{genomic_sequences,query_sequences,alignments,query_coverage,temp.fasta,temp.bed,introns.tmp,summary.txt}
+rm -rf "$outdir"/{genomic_sequences,query_sequences,alignments,query_coverage,temp.fasta,temp.bed,introns.tmp,summary.txt,mafft.log}
 mkdir -p "$outdir"/{genomic_sequences,query_sequences,alignments,query_coverage}
 
 shopt -s nullglob
@@ -71,8 +71,8 @@ do
         done
     fi
 
-    # 2) query
-    ##########
+    # 2) query (possibly reverse-complemented)
+    ##########################################
 
     bedtools getfasta \
         -s \
@@ -85,14 +85,32 @@ do
 
     mv "${outdir}/temp.fasta" "${outdir}/query_sequences/${id}.fasta"
 
-
+    echo -e "probe ID: $id\n" >> "${outdir}/mafft.log"
+    
     # align genomic and query sequences
     mafft \
         --inputorder \
         --preservecase \
         --addfragments "${outdir}/query_sequences/${id}.fasta" \
         "${outdir}/genomic_sequences/${id}.fasta" \
-    > "${outdir}/alignments/${id}.fasta" 2>/dev/null
+    > "${outdir}/alignments/${id}.fasta" 2>> "${outdir}/mafft.log"
+    
+    # Sometimes mafft --addframgents fails if the reference contains too much ambiguous nucleotides.
+    # --maxambiguous 1.0 could help, but is only available for MAFFT's online version.
+    # As a workaround, missing alignments are recomputed without the --addfragments option: 
+    if ! test -s "${outdir}/alignments/${id}.fasta"; then
+        echo -e "\nWarning: mafft --addfragments failed, alignment repeated without the --addfragments option\n" >> "${outdir}/mafft.log"
+        cat "${outdir}/genomic_sequences/${id}.fasta" "${outdir}/query_sequences/${id}.fasta" > "${outdir}/mafft_input.tmp"
+        
+        mafft \
+            --inputorder \
+            --preservecase \
+            "${outdir}/mafft_input.tmp" \
+        > "${outdir}/alignments/${id}.fasta" 2>> "${outdir}/mafft.log"
+            
+    fi
+    
+    echo -e "\n\n-------------\n\n" >> "${outdir}/mafft.log"
 
     # visualize query (marker) coverage
     fasta_formatter -i "$probes" | grep "^>${id}$" -A1 > "${outdir}/temp.fasta"
@@ -113,4 +131,4 @@ Rscript --vanilla summarize.r "${outdir}"
 sort -k3 -k2 -nr "${outdir}/summary.txt" > "${outdir}/summary.tmp"
 mv "${outdir}/summary.tmp" "${outdir}/summary.txt"
 
-rm -rf "$outdir"/{genomic_sequences,query_sequences,temp.fasta,temp.bed,introns.tmp}
+rm -rf "$outdir"/{genomic_sequences,query_sequences,temp.fasta,temp.bed,introns.tmp,mafft_input.tmp}
