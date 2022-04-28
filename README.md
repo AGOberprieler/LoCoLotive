@@ -58,7 +58,9 @@ As a minimum, two FASTA files, i.e., probe sequences and reference genome, are r
 If an additional GFF3 file comprising exon information is provided via the `-a` option, intronic regions will be highlighted as uppercase in the created MSAs.
 In this case, intronic bases located between consecutive BLAST hits of the same probe sequence will also be reported in the tabular output file (summary.txt).
 
-NOTE: The main script run.py has to be executed inside the LoCoLotive directory. When using the Docker image, all input files must also be placed in this directory!
+NOTE:
+- The main script run.py has to be executed inside the LoCoLotive directory. When using the Docker image, all input files must also be placed in this directory!
+- If MC_LENGTH is too high, it is more likely that, in the final MSAs, parts of probe sequences will be mapped to different reference positions than suggested by BLAST, possibly requiring manual correction. However, summary.txt will not be affected by this problem.
 
 ## Example
 
