@@ -3,7 +3,7 @@ In silico identification of low-copy nuclear loci based on published target capt
 
 ## Requirements
 - Linux OS
-- [Docker](https://docs.docker.com/) or ([BEDOPS](https://bedops.readthedocs.io/en/latest/), [bedtools](https://bedtools.readthedocs.io/en/latest/), [FASTX-Toolkit](http://hannonlab.cshl.edu/fastx_toolkit/), [gawk](https://www.gnu.org/software/gawk/), [GenomeTools](http://genometools.org/), [MAFFT](https://mafft.cbrc.jp/alignment/software/), [BLAST](https://blast.ncbi.nlm.nih.gov/), [python3](https://www.python.org/), [R](https://www.r-project.org/), [ape](https://cran.r-project.org/web/packages/ape/), [seqinr](https://cran.r-project.org/web/packages/seqinr/)).
+- [Docker](https://docs.docker.com/) **or** ([BEDOPS](https://bedops.readthedocs.io/en/latest/), [bedtools](https://bedtools.readthedocs.io/en/latest/), [FASTX-Toolkit](http://hannonlab.cshl.edu/fastx_toolkit/), [gawk](https://www.gnu.org/software/gawk/), [GenomeTools](http://genometools.org/), [MAFFT](https://mafft.cbrc.jp/alignment/software/), [BLAST](https://blast.ncbi.nlm.nih.gov/), [python3](https://www.python.org/), [R](https://www.r-project.org/), [ape](https://cran.r-project.org/web/packages/ape/), [seqinr](https://cran.r-project.org/web/packages/seqinr/)).
 
 Depending on your Linux distribution, the latter tools can possibly be installed with
 
@@ -17,7 +17,7 @@ and
 Rscript -e 'install.packages(c("ape", "seqinr"), repos="https://cloud.r-project.org")'
 ```
 
-Alternatively, you can use the supplied Docker image, which already contains all dependencies required:
+**Alternatively**, you can use the supplied Docker image, which already contains all dependencies required:
 
 1. Install [Docker](https://docs.docker.com/engine/install/).
 2. Run `docker pull ulbio/locolotive` to download and import the docker image.
@@ -58,8 +58,8 @@ As a minimum, two FASTA files, i.e., probe sequences and reference genome, are r
 If an additional GFF3 file comprising exon information is provided via the `-a` option, intronic regions will be highlighted as uppercase in the created MSAs.
 In this case, intronic bases located between consecutive BLAST hits of the same probe sequence will also be reported in the tabular output file (summary.txt).
 
-NOTE:
-- The main script run.py has to be executed inside the LoCoLotive directory. When using the Docker image, all input files must also be placed in this directory!
+**NOTE**:
+- The main script run.py has to be executed **inside the LoCoLotive directory**. When using the Docker image, all input files must also be placed in this directory!
 - If MC_LENGTH is too high, it is more likely that, in the final MSAs, parts of probe sequences will be mapped to different reference positions than suggested by BLAST, possibly requiring manual correction. However, summary.txt will not be affected by this problem.
 
 ## Example
@@ -99,7 +99,7 @@ create BLAST database...
 
 
 Building a new DB, current time: 04/21/2022 05:59:01
-New DB name:   /home/uli/Schreibtisch/agnes/poster/scripts_revised/package/test_dir/LoCoLotive/sunf/GCA_003112345.1_ASM311234v1_genomic/GCA_003112345.1_ASM311234v1_genomic.fna
+New DB name:   /home/uli/LoCoLotive/sunf/GCA_003112345.1_ASM311234v1_genomic/GCA_003112345.1_ASM311234v1_genomic.fna
 New DB title:  ../GCA_003112345.1_ASM311234v1_genomic.fna
 Sequence type: Nucleotide
 Keep MBits: T
