@@ -26,6 +26,11 @@ Since compatibility with future versions of the external tools cannot be guarant
 Note that this image does NOT support the Windows Subsystem for Linux (WSL).
 
 ## Usage
+First download LoCoLotive and move into the LoCoLotive directory:
+```bash
+git clone https://github.com/AGOberprieler/LoCoLotive
+cd LoCoLotive
+```
 
 The whole pipeline can be run using the main script run.py. When using the Docker image, simply prepend `./docker.sh` to any command calls such as `./docker.sh ./run.py -h`.
 The latter command will list all available options:
@@ -70,6 +75,7 @@ For illustration, we will use LoCoLotive to filter Compositae-specific probe seq
 
 1. Download reference genome from NCBI: https://www.ncbi.nlm.nih.gov/data-hub/assembly/GCA_003112345.1/ (download "Genomic sequence (FASTA)" and "Annotated features (GFF3)" and extract the files from the download archive)
 2. Download probe sequences, more precisely the source ESTs used for probe design: https://raw.githubusercontent.com/Smithsonian/Compositae-COS-workflow/master/COS_sunf_lett_saff_all.fasta
+3. Move/copy both FASTA files and the GFF file into the LoCoLotive directory.
 
 To avoid redundant loci, we will only use source ESTs from sunflower.
 These can be extracted with
@@ -78,17 +84,17 @@ These can be extracted with
 egrep ">.{9}sunf" COS_sunf_lett_saff_all.fasta -A1 | grep -v "^--$" > sunf.fasta
 ```
 
-Before running the pipeline, it is generally a good idea to ensure that the input files do not contain Windows-like line breaks. If you are unsure, you can use [dos2unix](https://waterlan.home.xs4all.nl/dos2unix/dos2unix.htm) to sanitize the files.
+Before running the pipeline, it is generally a good idea to ensure that the input files do not contain Windows-like line breaks. If you are unsure, you can use [dos2unix](https://waterlan.home.xs4all.nl/dos2unix/dos2unix.htm) to sanitize the files (e.g., `dos2unix sunf.fasta`).
 
 ### Running LoCoLotive
 
-Now, we will run LoCoLotive with default parameters (adjust the file paths if necessary):
+Now, we will run LoCoLotive with default parameters (adjust the file names/paths if necessary):
 
 ```raw
-./run.py -a GCA_003112345.1_ASM311234v1_genomic.gff sunf.fasta GCA_003112345.1_ASM311234v1_genomic.fna
+./run.py -a genomic.gff sunf.fasta GCA_003112345.1_ASM311234v1_genomic.fna
 ```
 
-Remember that you have to prepend `./docker.sh ` when using the supplied Docker image.
+Remember that you have to prepend `./docker.sh ` when using the supplied Docker image!
 
 The screen output of the above command should be similar to the following:
 
@@ -212,7 +218,7 @@ If the pipeline is again applied to the same probe sequences, but using another 
 For instance, after a second run with a lower MC_LENGTH setting 
 
 ```raw
-./run.py -m 10 -a GCA_003112345.1_ASM311234v1_genomic.gff sunf.fasta GCA_003112345.1_ASM311234v1_genomic.fna
+./run.py -m 10 -a genomic.gff sunf.fasta GCA_003112345.1_ASM311234v1_genomic.fna
 ```
 
 which implies a stricter filtering, the following directories will be present:
