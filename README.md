@@ -91,10 +91,10 @@ Before running the pipeline, it is generally a good idea to ensure that the inpu
 Now, we will run LoCoLotive with default parameters (adjust the file names/paths if necessary):
 
 ```raw
-./run.py -a genomic.gff sunf.fasta GCA_003112345.1_ASM311234v1_genomic.fna
+./docker.sh ./run.py -a genomic.gff sunf.fasta GCA_003112345.1_ASM311234v1_genomic.fna
 ```
 
-Remember that you have to prepend `./docker.sh ` when using the supplied Docker image!
+Remember to omit `./docker.sh` when using local installations.
 
 The screen output of the above command should be similar to the following:
 
@@ -218,7 +218,7 @@ If the pipeline is again applied to the same probe sequences, but using another 
 For instance, after a second run with a lower MC_LENGTH setting 
 
 ```raw
-./run.py -m 10 -a genomic.gff sunf.fasta GCA_003112345.1_ASM311234v1_genomic.fna
+./docker.sh ./run.py -m 10 -a genomic.gff sunf.fasta GCA_003112345.1_ASM311234v1_genomic.fna
 ```
 
 which implies a stricter filtering, the following directories will be present:
