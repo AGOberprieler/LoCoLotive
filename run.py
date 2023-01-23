@@ -106,8 +106,8 @@ def main():
     cfg = parser.parse_args()
 
     fasta_extensions = (
-        ".fasta", ".fna", ".ffn", ".faa", ".frn", ".fa",
-        ".FASTA", ".FNA", ".FFN", ".FAA", ".FRN", ".FA"
+        ".fasta", ".fna", ".ffn", ".faa", ".frn", ".fa", ".fas",
+        ".FASTA", ".FNA", ".FFN", ".FAA", ".FRN", ".FA", ".FAS"
     )
 
     for seq in ["genome", "probes"]:
