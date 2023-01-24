@@ -272,7 +272,7 @@ then
 fi
 
 # sort table
-sort -k3,3nr -k2,2n -k1,1 "${outdir}/summary.txt" > "${outdir}/summary.tmp"
+sort -k3,3nr -k2,2n -k1,1 "${outdir}/summary.txt" | column -t > "${outdir}/summary.tmp"
 mv "${outdir}/summary.tmp" "${outdir}/summary.txt"
 
 # change group indices for better clarity (according to order of appearance in summary.txt):
@@ -300,7 +300,7 @@ then
         for (i in new) { 
             printf new[i]" " > outdir"/group_order.tmp"
         }
-    }' "$outdir"/summary.txt > "$outdir"/summary.tmp
+    }' "$outdir"/summary.txt | column -t > "$outdir"/summary.tmp
     mv "$outdir"/summary.tmp "$outdir"/summary.txt
 
     # 2) in alignment file names
