@@ -214,7 +214,7 @@ then
             fi
 
 
-            echo -e "group ${i_group}\n" >> "${outdir}/mafft.log"
+            echo -e "group ${i_group} (note: group indices can be changed later)\n" >> "${outdir}/mafft.log"
 
             # 2) combine queries (already extracted)
             ########################################
@@ -253,7 +253,7 @@ then
         progress_bar "$i_group" "$i_max" 40 processed
     done
 
-    rm -rf "$outdir"/{ranges.tmp,queries.tmp}
+    rm -rf "$outdir"/{genomic_sequences_groupwise,genomic_ranges_groupwise,ranges.tmp,queries.tmp}
 fi
 
 
@@ -274,5 +274,54 @@ fi
 # sort table
 sort -k3,3nr -k2,2n -k1,1 "${outdir}/summary.txt" > "${outdir}/summary.tmp"
 mv "${outdir}/summary.tmp" "${outdir}/summary.txt"
+
+# change group indices for better clarity (according to order of appearance in summary.txt):
+if grep -q "," "${outdir}/groups_of_overlapping_loci.txt"
+then
+    # 1) in tabular summary file
+    gawk -v "outdir=$outdir" '
+    BEGIN {
+        PROCINFO["sorted_in"] = "@ind_num_asc"
+        max = 1
+        OFS = "\t"
+    }
+    {
+        if (!new[$6]) {
+            new[$6] = max
+            $6 = max
+            max++
+        }
+        else {
+            $6 = new[$6]
+        }
+        print
+    }
+    END {
+        for (i in new) { 
+            printf new[i]" " > outdir"/group_order.tmp"
+        }
+    }' "$outdir"/summary.txt > "$outdir"/summary.tmp
+    mv "$outdir"/summary.tmp "$outdir"/summary.txt
+
+    # 2) in alignment file names
+    arr=( $(cat "$outdir"/group_order.tmp) )
+    for i in "${!arr[@]}"; do
+        old=$(( i + 1 ))
+        new="${arr[$i]}"
+        mv "$outdir"/alignments_groupwise/group${old}.fasta "$outdir"/alignments_groupwise/group${new}.tmp
+    done
+    for i in "${!arr[@]}"; do
+        old=$(( i + 1 ))
+        new="${arr[$i]}"
+        mv "$outdir"/alignments_groupwise/group${new}.tmp "$outdir"/alignments_groupwise/group${new}.fasta
+    done
+
+    # 3) in list of groups
+    awk '{for (i=1; i<=NF; i++) {print "s/^group "i":/group "$i"/"}}' "$outdir"/group_order.tmp > "$outdir"/replacement.sed
+    sed -f "$outdir"/replacement.sed "$outdir"/groups_of_overlapping_loci.txt | sort -k2,2n | awk '{$2=$2":"; print}' > "$outdir"/groups_of_overlapping_loci.tmp
+    mv "$outdir"/groups_of_overlapping_loci.tmp "$outdir"/groups_of_overlapping_loci.txt
+
+    rm "$outdir"/{group_order.tmp,replacement.sed}
+fi
 
 rm -rf "$outdir"/{genomic_sequences,query_sequences,temp.fasta,temp.bed,introns.tmp,mafft_input.tmp}
