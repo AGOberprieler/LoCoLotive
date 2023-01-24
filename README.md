@@ -20,7 +20,7 @@ Rscript -e 'install.packages(c("ape", "seqinr"), repos="https://cloud.r-project.
 **Alternatively**, you can use the supplied Docker image, which already contains all dependencies required:
 
 1. Install [Docker](https://docs.docker.com/engine/install/).
-2. Run `docker pull ulbio/locolotive` to download and import the docker image.
+2. Run `docker pull ul90/locolotive` to download and import the docker image.
 
 Since compatibility with future versions of the external tools cannot be guaranteed, **it is safer and therefore recommended to use the Docker image** rather than local installations.
 Note that this image does NOT support the Windows Subsystem for Linux (WSL).
