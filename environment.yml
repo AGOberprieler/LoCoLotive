@@ -1,0 +1,19 @@
+name: locolotive
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - python=3.9
+  - util-linux=2.36
+  - gawk=5.1.0
+  - r=4.1
+  - r-seqinr=4.2_23
+  - r-ape=5.6_2
+  - numpy=1.24.1
+  - scipy=1.10.0
+  - bedops=2.4.39
+  - bedtools=2.30.0
+  - genometools-genometools=1.6.2
+  - mafft=7.475
+  - blast=2.11.0
+  - fastx_toolkit=0.0.14
