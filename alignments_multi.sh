@@ -253,7 +253,6 @@ then
         progress_bar "$i_group" "$i_max" 40 processed
     done
 
-    rm -rf "$outdir"/{genomic_sequences_groupwise,genomic_ranges_groupwise,ranges.tmp,queries.tmp}
 fi
 
 
@@ -262,8 +261,12 @@ fi
 
 echo -e "\nsummarize results..."
 Rscript --vanilla summarize.r "${outdir}"
+if grep -q "," "${outdir}/groups_of_overlapping_loci.txt"
+then
+    Rscript --vanilla summarize_groupwise.r "${outdir}"
+fi
 
-# add group column (if overlapping loci present)
+# add group column to summary.txt (if overlapping loci present)
 if grep -q "," "${outdir}/groups_of_overlapping_loci.txt"
 then
     cat "${outdir}"/groups_of_overlapping_loci.txt | awk -F "[ ,]" '{gsub(/:/, "", $2); for (i=3; i<=NF; i++) {print $i"\t"$2}}' | sort -k 1b,1 > group_mapping.txt
@@ -271,14 +274,19 @@ then
     join -t$'\t' -j 1 "${outdir}/summary.tmp" group_mapping.txt > "${outdir}/summary.txt"
 fi
 
-# sort table
-sort -k3,3nr -k2,2n -k1,1 "${outdir}/summary.txt" | column -t > "${outdir}/summary.tmp"
+# sort table(s)
+sort -k3,3nr -k2,2nr -k1,1 "${outdir}/summary.txt" > "${outdir}/summary.tmp"
 mv "${outdir}/summary.tmp" "${outdir}/summary.txt"
+if grep -q "," "${outdir}/groups_of_overlapping_loci.txt"
+then
+    sort -k3,3nr -k2,2nr -k1,1 "${outdir}/summary_groupwise.txt" > "${outdir}/summary_groupwise.tmp"
+    mv "${outdir}/summary_groupwise.tmp" "${outdir}/summary_groupwise.txt"
+fi
 
 # change group indices for better clarity (according to order of appearance in summary.txt):
 if grep -q "," "${outdir}/groups_of_overlapping_loci.txt"
 then
-    # 1) in tabular summary file
+    # 1) in summary.txt (store order in group_order.tmp)
     gawk -v "outdir=$outdir" '
     BEGIN {
         PROCINFO["sorted_in"] = "@ind_num_asc"
@@ -302,8 +310,15 @@ then
         }
     }' "$outdir"/summary.txt | column -t > "$outdir"/summary.tmp
     mv "$outdir"/summary.tmp "$outdir"/summary.txt
+    
+    # 2) in summary_groupwise.txt
+    awk '{for (i=1; i<=NF; i++) {print "s/^"i"\\t/"$i":\\t/"}}' "$outdir"/group_order.tmp > "$outdir"/replacement.sed
+    sed -i -f "$outdir"/replacement.sed "$outdir"/summary_groupwise.txt
+    sed -i 's/:\t/\t/' "$outdir"/summary_groupwise.txt
+    column -t "$outdir"/summary_groupwise.txt > "$outdir"/summary.tmp
+    mv "$outdir"/summary.tmp "$outdir"/summary_groupwise.txt
 
-    # 2) in alignment file names
+    # 3) in alignment file names
     arr=( $(cat "$outdir"/group_order.tmp) )
     for i in "${!arr[@]}"; do
         old=$(( i + 1 ))
@@ -316,7 +331,7 @@ then
         mv "$outdir"/alignments_groupwise/group${new}.tmp "$outdir"/alignments_groupwise/group${new}.fasta
     done
 
-    # 3) in list of groups
+    # 4) in list of groups
     awk '{for (i=1; i<=NF; i++) {print "s/^group "i":/group "$i"/"}}' "$outdir"/group_order.tmp > "$outdir"/replacement.sed
     sed -f "$outdir"/replacement.sed "$outdir"/groups_of_overlapping_loci.txt | sort -k2,2n | awk '{$2=$2":"; print}' > "$outdir"/groups_of_overlapping_loci.tmp
     mv "$outdir"/groups_of_overlapping_loci.tmp "$outdir"/groups_of_overlapping_loci.txt
@@ -324,4 +339,9 @@ then
     rm "$outdir"/{group_order.tmp,replacement.sed}
 fi
 
-rm -rf "$outdir"/{genomic_sequences,query_sequences,temp.fasta,temp.bed,introns.tmp,mafft_input.tmp}
+# final cleanup
+rm -rf "$outdir"/{genomic_sequences,query_sequences,genomic_ranges,query_intervals,temp.fasta,temp.bed,introns.tmp,mafft_input.tmp,summary.tmp}
+if grep -q "," "${outdir}/groups_of_overlapping_loci.txt"
+then
+    rm -rf "$outdir"/{genomic_sequences_groupwise,genomic_ranges_groupwise,ranges.tmp,queries.tmp,summary_groupwise.tmp}
+fi
