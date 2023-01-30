@@ -112,8 +112,9 @@ def main():
 
     for seq in ["genome", "probes"]:
         _, ext = os.path.splitext(getattr(cfg, seq))
+
         if ext not in fasta_extensions:
-            raise ValueError(f'{getattr(cfg, seq)} must be FASTA file and have an appropriate file extension (eg. ".fasta")')
+            raise ValueError(f'\"{getattr(cfg, seq)}\" must be FASTA file and have an appropriate file name extension (eg. ".fasta")')
 
     genome_fname = os.path.split(cfg.genome)[1]
     genome_name = os.path.splitext(os.path.split(cfg.genome)[1])[0]
@@ -278,6 +279,10 @@ def main():
         stdout=sys.stdout,
         check=True
     )
+
+    if 0 == len(os.listdir(os.path.join(probes_name, genome_name, "e_thresh_" + cfg.evalue, "mc_thresh_" + str(cfg.mc_length), "hits_filtered"))):
+        print("\n\nWARNING: No loci left, abort.")
+        sys.exit()
 
     print("\ncreate alignments...")
     if cfg.annotation:

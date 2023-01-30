@@ -2,6 +2,8 @@
 
 usage="usage: ./alignments_multi.sh <probes FASTA> <genome FASTA> <output directory> [<intronic regions BED>]"
 
+mafft_timeout="15s"
+
 if [ $# -lt 3 ]
 then
     echo "Error in $0: wrong number of command arguments"
@@ -89,12 +91,18 @@ do
 
     # align genomic and query sequences
     ###################################
-    mafft \
+    timeout "${mafft_timeout}" mafft \
         --inputorder \
         --preservecase \
+        --auto \
         --addfragments "${outdir}/query_sequences/${id}.fasta" \
         "${outdir}/genomic_sequences/${id}.fasta" \
     > "${outdir}/alignments/${id}.fasta" 2>> "${outdir}/mafft.log"
+    
+    # in case of timeout, remove alignment
+    if [ $? -eq 124 ]; then
+        rm "${outdir}/alignments/${id}.fasta" 2> /dev/null
+    fi
 
     # Sometimes mafft --addframgents fails if the reference contains too much ambiguous nucleotides.
     # --maxambiguous 1.0 could help, but is only available in MAFFT's online version.
@@ -103,11 +111,18 @@ do
         echo -e "\nWarning: mafft --addfragments failed, alignment repeated without the --addfragments option\n" >> "${outdir}/mafft.log"
         cat "${outdir}/genomic_sequences/${id}.fasta" "${outdir}/query_sequences/${id}.fasta" > "${outdir}/mafft_input.tmp"
 
-        mafft \
+        timeout "${mafft_timeout}" mafft \
             --inputorder \
             --preservecase \
+            --auto \
             "${outdir}/mafft_input.tmp" \
         > "${outdir}/alignments/${id}.fasta" 2>> "${outdir}/mafft.log"
+        
+        # in case of timeout, keep unaligned input
+        if [ $? -eq 124 ]; then
+            echo -e "\n\nWarning: Alignment failed for ${id}!\n\n" | tee "${outdir}/mafft.log"
+            mv "${outdir}/mafft_input.tmp" "${outdir}/alignments/${id}.fasta"
+        fi
 
     fi
 
@@ -224,13 +239,19 @@ then
 
             # align genomic and query sequences
             ###################################
-            mafft \
+            timeout "${mafft_timeout}" mafft \
                 --inputorder \
                 --preservecase \
+                --auto \
                 --addfragments "${outdir}/queries.tmp" \
                 "${outdir}/genomic_sequences_groupwise/${i_group}.fasta" \
             > "${outdir}/alignments_groupwise/group${i_group}.fasta" 2>> "${outdir}/mafft.log"
-
+            
+            # in case of timeout, remove alignment
+            if [ $? -eq 124 ]; then
+                rm "${outdir}/alignments_groupwise/group${i_group}.fasta" 2> /dev/null
+            fi
+            
             # Sometimes mafft --addframgents fails if the reference contains too much ambiguous nucleotides.
             # --maxambiguous 1.0 could help, but is only available in MAFFT's online version.
             # As a workaround, missing alignments are recomputed without the --addfragments option:
@@ -238,11 +259,18 @@ then
                 echo -e "\nWarning: mafft --addfragments failed, alignment repeated without the --addfragments option\n" >> "${outdir}/mafft.log"
                 cat "${outdir}/genomic_sequences_groupwise/${i_group}.fasta" "${outdir}/queries.tmp" > "${outdir}/mafft_input.tmp"
 
-                mafft \
+                timeout "${mafft_timeout}" mafft \
                     --inputorder \
                     --preservecase \
+                    --auto \
                     "${outdir}/mafft_input.tmp" \
                 > "${outdir}/alignments_groupwise/group${i_group}.fasta" 2>> "${outdir}/mafft.log"
+                
+                # in case of timeout, keep unaligned input
+                if [ $? -eq 124 ]; then
+                    echo -e "\n\nWarning: Alignment failed for group${i_group}!\n\n" | tee "${outdir}/mafft.log"
+                    mv "${outdir}/mafft_input.tmp" "${outdir}/alignments_groupwise/group${i_group}.fasta"
+                fi
 
             fi
 

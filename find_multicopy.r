@@ -23,12 +23,12 @@ for (i in 1:(nrow(x)-1)) {
                 # gap sensitive:
                 sstart1 <- system(
                     paste("gawk -v query_ind=", common_qrange[1], " -v query_start=", x[i,2], " -v ref_start=", min(x[i,5:6]), " -f utils/find_pos_btop_plus.awk", sep=""),
-                    input = x[i,16],
+                    input = as.character(x[i,16]),
                     intern = T
                 )
                 sstart2 <- system(
                     paste("gawk -v query_ind=", common_qrange[1], " -v query_start=", x[j,2], " -v ref_start=", min(x[j,5:6]), " -f utils/find_pos_btop_plus.awk", sep=""),
-                    input = x[j,16],
+                    input = as.character(x[j,16]),
                     intern = T
                 )
             }
@@ -40,12 +40,12 @@ for (i in 1:(nrow(x)-1)) {
                 # gap sensitive:
                 sstart1 <- system(
                     paste("gawk -v query_ind=", common_qrange[1], " -v query_start=", x[i,2], " -v ref_end=", max(x[i,5:6]), " -f utils/find_pos_btop_minus.awk", sep=""),
-                    input = x[i,16],
+                    input = as.character(x[i,16]),
                     intern = T
                 )
                 sstart2 <- system(
                     paste("gawk -v query_ind=", common_qrange[1], " -v query_start=", x[j,2], " -v ref_end=", max(x[j,5:6]), " -f utils/find_pos_btop_minus.awk", sep=""),
-                    input = x[j,16],
+                    input = as.character(x[j,16]),
                     intern = T
                 )
             }
