@@ -98,7 +98,7 @@ do
         --addfragments "${outdir}/query_sequences/${id}.fasta" \
         "${outdir}/genomic_sequences/${id}.fasta" \
     > "${outdir}/alignments/${id}.fasta" 2>> "${outdir}/mafft.log"
-    
+
     # in case of timeout, remove alignment
     if [ $? -eq 124 ]; then
         rm "${outdir}/alignments/${id}.fasta" 2> /dev/null
@@ -121,7 +121,7 @@ do
         # in case of timeout, keep unaligned input
         if [ $? -eq 124 ]; then
             echo -e "\n\nWarning: Alignment failed for ${id}!\n\n" | tee "${outdir}/mafft.log"
-            mv "${outdir}/mafft_input.tmp" "${outdir}/alignments/${id}.fasta"
+            fasta_formatter -i "${outdir}/mafft_input.tmp" -o "${outdir}/alignments/${id}.fasta"
         fi
 
     fi
@@ -269,7 +269,7 @@ then
                 # in case of timeout, keep unaligned input
                 if [ $? -eq 124 ]; then
                     echo -e "\n\nWarning: Alignment failed for group${i_group}!\n\n" | tee "${outdir}/mafft.log"
-                    mv "${outdir}/mafft_input.tmp" "${outdir}/alignments_groupwise/group${i_group}.fasta"
+                    fasta_formatter -i "${outdir}/mafft_input.tmp" -o "${outdir}/alignments_groupwise/group${i_group}.fasta"
                 fi
 
             fi
@@ -368,8 +368,9 @@ then
 fi
 
 # final cleanup
-rm -rf "$outdir"/{genomic_sequences,query_sequences,genomic_ranges,query_intervals,temp.fasta,temp.bed,introns.tmp,mafft_input.tmp,summary.tmp}
+rm -rf "$outdir"/{genomic_sequences,query_sequences,genomic_ranges,query_intervals,temp.fasta,temp.bed,introns.tmp,mafft_input.tmp,summary.tmp} 2> /dev/null
+rm -f "${probes}.fai" "${genome}.fai" 2> /dev/null
 if grep -q "," "${outdir}/groups_of_overlapping_loci.txt"
 then
-    rm -rf "$outdir"/{genomic_sequences_groupwise,genomic_ranges_groupwise,ranges.tmp,queries.tmp,summary_groupwise.tmp}
+    rm -rf "$outdir"/{genomic_sequences_groupwise,genomic_ranges_groupwise,ranges.tmp,queries.tmp,summary_groupwise.tmp} 2> /dev/null
 fi
