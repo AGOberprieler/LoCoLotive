@@ -75,11 +75,11 @@ for (ID in IDs) {
         file.path(outdir, "alignments", paste(ID, ".fasta", sep="")),
         format = "fasta",
         as.character = TRUE,
-        as.matrix = TRUE
+        as.matrix = FALSE
     )
 
-    ali_length <- ncol(alignment)
-    n_hits <- nrow(alignment) - 1
+    ali_length <- length(alignment[[1]])
+    n_hits <- length(alignment) - 1
     # ID <- sub(".*/", "", args[1])
 
     # append results to summary file

@@ -120,7 +120,8 @@ do
         
         # in case of timeout, keep unaligned input
         if [ $? -eq 124 ]; then
-            echo -e "\n\nWarning: Alignment failed for ${id}!\n\n" | tee "${outdir}/mafft.log"
+            echo -e "\n\nWarning: Alignment failed for ${id}!\n" | tee "${outdir}/mafft.log"
+            rm "${outdir}/alignments/${id}.fasta" 2> /dev/null
             fasta_formatter -i "${outdir}/mafft_input.tmp" -o "${outdir}/alignments/${id}.fasta"
         fi
 
@@ -268,7 +269,8 @@ then
                 
                 # in case of timeout, keep unaligned input
                 if [ $? -eq 124 ]; then
-                    echo -e "\n\nWarning: Alignment failed for group${i_group}!\n\n" | tee "${outdir}/mafft.log"
+                    echo -e "\n\nWarning: Alignment failed for group${i_group}!\n" | tee "${outdir}/mafft.log"
+                    rm "${outdir}/alignments_groupwise/group${i_group}.fasta" 2> /dev/null
                     fasta_formatter -i "${outdir}/mafft_input.tmp" -o "${outdir}/alignments_groupwise/group${i_group}.fasta"
                 fi
 

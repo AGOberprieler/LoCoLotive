@@ -9,7 +9,7 @@ outdir <- args[1]
 unlink(file.path(outdir, "summary_groupwise.txt"), expand = F)
 
 groups <- strsplit(
-    read.csv(file.path(outdir, "groups_of_overlapping_loci.txt"), sep=" ", header=F)[,3],
+    read.csv(file.path(outdir, "groups_of_overlapping_loci.txt"), sep=" ", header=F, stringsAsFactors=F)[,3],
     ","
 )
 
@@ -117,11 +117,11 @@ for (group_ID in seq_along(groups)) {
         file.path(outdir, "alignments_groupwise", paste("group", group_ID, ".fasta", sep="")),
         format = "fasta",
         as.character = TRUE,
-        as.matrix = TRUE
+        as.matrix = FALSE
     )
 
-    ali_length <- ncol(alignment)
-    # n_hits <- nrow(alignment) - 1
+    ali_length <- length(alignment[[1]])
+    # n_hits <- length(alignment) - 1
     n_hit_groups <- nrow(gff_intervals)
 
     # append results to summary file
