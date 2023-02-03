@@ -135,6 +135,7 @@ shopt -u nullglob
 
 if [ -z "$(ls -A "${outdir}"/hits_filtered)" ]; then
     echo "Warning: no BLAST hits left after filtering"
+    touch "${outdir}/summary.txt"
     exit
 fi
 
