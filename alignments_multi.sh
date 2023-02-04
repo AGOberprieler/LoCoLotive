@@ -3,6 +3,7 @@
 usage="usage: ./alignments_multi.sh <probes FASTA> <genome FASTA> <output directory> [<intronic regions BED>]"
 
 mafft_timeout="15s"
+max_introns=5000 # skip intron highlighting if exceeded
 
 if [ $# -lt 3 ]
 then
@@ -120,7 +121,7 @@ do
         
         # in case of timeout, keep unaligned input
         if [ $? -eq 124 ]; then
-            echo -e "\n\nWarning: Alignment failed for ${id}!\n" | tee "${outdir}/mafft.log"
+            echo -e "\nWarning: Alignment failed for ${id}!" | tee "${outdir}/mafft.log"
             rm "${outdir}/alignments/${id}.fasta" 2> /dev/null
             fasta_formatter -i "${outdir}/mafft_input.tmp" -o "${outdir}/alignments/${id}.fasta"
         fi
@@ -215,18 +216,22 @@ then
                 > "${outdir}/introns.tmp"
 
                 n_introns=$(wc -l < "${outdir}/introns.tmp")
-
                 range_start=$(cut -f2 "${outdir}/temp.bed")
-                for k in $(seq 1 "$n_introns")
-                do
-                    read -r intron_start intron_end <<<"$(sed -n "${k}p" "${outdir}/introns.tmp" | cut -f5,6)"
-                    # intron positions relative to pair
-                    a=$(( intron_start - range_start ))
-                    b=$(( intron_end - range_start ))
+                if [ $n_introns -le $max_introns ]
+                then
+                    for k in $(seq 1 "$n_introns")
+                    do
+                        read -r intron_start intron_end <<<"$(sed -n "${k}p" "${outdir}/introns.tmp" | cut -f5,6)"
+                        # intron positions relative to pair
+                        a=$(( intron_start - range_start ))
+                        b=$(( intron_end - range_start ))
 
-                    cat "${outdir}/genomic_sequences_groupwise/${i_group}.fasta" | utils/upint.py $a $b > "${outdir}/temp.fasta"
-                    mv "${outdir}/temp.fasta" "${outdir}/genomic_sequences_groupwise/${i_group}.fasta"
-                done
+                        cat "${outdir}/genomic_sequences_groupwise/${i_group}.fasta" | utils/upint.py $a $b > "${outdir}/temp.fasta"
+                        mv "${outdir}/temp.fasta" "${outdir}/genomic_sequences_groupwise/${i_group}.fasta"
+                    done
+                else
+                    echo -e "\nWarning: group with $n_introns introns detected, skip intron highlighting"
+                fi
             fi
 
 
@@ -269,7 +274,7 @@ then
                 
                 # in case of timeout, keep unaligned input
                 if [ $? -eq 124 ]; then
-                    echo -e "\n\nWarning: Alignment failed for group${i_group}!\n" | tee "${outdir}/mafft.log"
+                    echo -e "\nWarning: Alignment failed for current group!" | tee "${outdir}/mafft.log"
                     rm "${outdir}/alignments_groupwise/group${i_group}.fasta" 2> /dev/null
                     fasta_formatter -i "${outdir}/mafft_input.tmp" -o "${outdir}/alignments_groupwise/group${i_group}.fasta"
                 fi
