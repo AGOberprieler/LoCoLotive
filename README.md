@@ -2,20 +2,25 @@
 In silico identification of low-copy nuclear loci based on published target capture probe sets and custom reference genomes.
 
 ## Requirements
-- Linux OS
-- [Docker](https://docs.docker.com/) **or** ([BEDOPS](https://bedops.readthedocs.io/en/latest/), [bedtools](https://bedtools.readthedocs.io/en/latest/), [FASTX-Toolkit](http://hannonlab.cshl.edu/fastx_toolkit/), [gawk](https://www.gnu.org/software/gawk/), [GenomeTools](http://genometools.org/), [MAFFT](https://mafft.cbrc.jp/alignment/software/), [BLAST](https://blast.ncbi.nlm.nih.gov/), [python3](https://www.python.org/), [R](https://www.r-project.org/), [ape](https://cran.r-project.org/web/packages/ape/), [seqinr](https://cran.r-project.org/web/packages/seqinr/)).
+LoCoLotive is primarily designed to run on Linux operating systems. It depends on a on several external tools, programming languages and libraries, namely [BEDOPS](https://bedops.readthedocs.io/en/latest/), [bedtools](https://bedtools.readthedocs.io/en/latest/), [FASTX-Toolkit](http://hannonlab.cshl.edu/fastx_toolkit/), [gawk](https://www.gnu.org/software/gawk/), [GenomeTools](http://genometools.org/), [MAFFT](https://mafft.cbrc.jp/alignment/software/), [BLAST](https://blast.ncbi.nlm.nih.gov/), [python3](https://www.python.org/), [R](https://www.r-project.org/), [ape](https://cran.r-project.org/web/packages/ape/), [seqinr](https://cran.r-project.org/web/packages/seqinr/), [NumPy](https://numpy.org/) and [SciPy](https://scipy.org/citing-scipy/).
 
-Depending on your Linux distribution, the latter tools can possibly be installed with
+There are several ways to deal with the required dependencies.
+
+### Option 1: Manual installation
+On Debian-based distributions, LoCoLotive's dependencies can be installed using the following or similar commands. Some of them may require root privileges, which can be given by prepending "sudo".
 
 ```raw
 apt update && apt install bedops bedtools fastx-toolkit gawk genometools mafft ncbi-blast+ python3 r-base r-base-dev
-```
-
-and
-
-```raw
+python3 -m pip install --user numpy
+python3 -m pip install --user scipy
 Rscript -e 'install.packages(c("ape", "seqinr"), repos="https://cloud.r-project.org")'
 ```
+
+Note: Since compatibility with arbitrary/future versions of the mentioned packages cannot be guaranteed, it is safer and therefore recommended to use either option 2 or 3 instead.
+
+### Option 2: Conda environment
+On Debian-based distributions, LoCoLotive's dependencies can be installed using the following or similar commands. Some of them may require root privileges, which can be given by prepending "sudo".
+
 
 **Alternatively**, you can use the supplied Docker image, which already contains all dependencies required:
 
