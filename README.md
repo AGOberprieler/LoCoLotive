@@ -291,7 +291,7 @@ Note that the second command also runs much faster because upstream results (e.g
 
 ## Example 2 (overlapping loci)
 
-In the first example, we only used ESTs from sunflower as input target sequences. We will now run a similar analysis using the complete set of ESTs to demonstrate LoCoLotives behaviour in presence of overlapping/redundant loci:
+In the first example, we only used ESTs from sunflower as input target sequences. We will now run a similar analysis using the complete set of ESTs to demonstrate LoCoLotives behavior in presence of overlapping/redundant loci:
 
 ```bash
 ./run.py -a genomic.gff COS_sunf_lett_saff_all.fasta GCA_003112345.1_ASM311234v1_genomic.fna
@@ -390,7 +390,9 @@ At3g19910saffCART_TINC_CSA1_4513  4345  6  598,69,124,2605,83           598,69,1
 - column 6: group ID
 
 4. Additional MSAs are generated for each group, e.g.
+
 ![group29.png](images/group29.png)
+
 This is almost identical to the MSA shown in example analysis 1, however, comprising redundant target sequences.
 
 5. In analogy to *summary_groupwise.txt*, an additional output file *summary_groupwise.txt* provides an overview over each group of loci.
@@ -409,4 +411,4 @@ This is almost identical to the MSA shown in example analysis 1, however, compri
 - column 5: intronic base pairs between consecutive groups of BLAST hits
 
 Using the latter outputs, in our example, it may be more comfortable to inspect 81 effective loci (groups) instead of 156 potentially overlapping ones.
-LoCoLotive's grouping behaviour is especially useful when it is unclear, which target sequences should be included in the analysis.
+LoCoLotive's grouping behavior is especially useful when it is unclear, which target sequences should be included in the analysis.
