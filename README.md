@@ -361,7 +361,6 @@ As indicated above, however, many of them are overlapping and potentially redund
 If there are at least two overlapping candidate loci, LoCoLotive detects disjunct groups of overlapping loci and generates additional outputs:
 
 1. For each candidate locus (left), *overlapping_loci.txt* lists all other loci (right, comma-delimited) overlapping with the former, e.g.
-
 ```raw
 At1g02640sunfQHB38G03_yg_ab1:
 At1g05910lettQGG30P16_yg_ab1:      At1g05910sunfQHG3c10_yg_ab1
@@ -370,9 +369,7 @@ At1g06680lettQGF27N07_yg_ab1:      At1g06680saffCART_TINC_CSA1_1830,At1g06680sun
 At1g06680saffCART_TINC_CSA1_1830:  At1g06680lettQGF27N07_yg_ab1,At1g06680sunf32531066
 ...
 ```
-
 2. For each group of loci, *groups_of_overlapping_loci.txt* lists its members, e.g.
-
 ```raw
 group 1: At2g26210lettQGE11A05_yg_ab1,At2g26210saffCART_TINC_CSA1_1006,At2g26210sunfQHF6P03_yg_ab1
 group 2: At2g41490lettQGD10N23_yg_ab1,At2g41490saffCART_TINC_CSA1_6658,At2g41490sunfQHB39M10_yg_ab1
@@ -381,7 +378,6 @@ group 4: At3g19910lettQGF10N04_yg_ab1,At3g19910saffCART_TINC_CSA1_4513,At3g19910
 group 5: At2g25310lettQGJ1G02_yg_ab1,At2g25310saffCART_TINC_CSA1_199,At2g25310sunfQHB27H08_yg_ab1
 ...
 ```
-
 3. An additional column indicating group membership is appended to *summary.txt*, allowing to quickly recognize overlaps, e.g.
 ```raw
 At2g26210saffCART_TINC_CSA1_1006  6244  8  1790,83,1488,943,297,74,785  1721,58,1488,796,297,51,738  1
@@ -393,11 +389,10 @@ At3g19910saffCART_TINC_CSA1_4513  4345  6  598,69,124,2605,83           598,69,1
 ```
 - column 6: group ID
 
-
 4. Additional MSAs are generated for each group, e.g.
-```raw
+![group29.png](images/group29.png)
+This is almost identical to the MSA shown in example analysis 1, however, comprising redundant target sequences.
 
-```
 5. In analogy to *summary_groupwise.txt*, an additional output file *summary_groupwise.txt* provides an overview over each group of loci.
 ```raw
 2   6639  10  3153,175,79,554,107,86,201,220,919  3153,173,79,554,106,86,201,179,707
