@@ -8,12 +8,12 @@ outdir <- args[1]
 # remove old summary file
 unlink(file.path(outdir, "summary.txt"), expand = F)
 
-# IDs of probe sequences having passed all filtering steps
+# IDs of target sequences having passed all filtering steps
 IDs <- list.files(path=file.path(outdir, "hits_filtered"), all.files=T, full.names=F, no..=T)
 
 for (ID in IDs) {
 
-    # start index (1-based) of genomic fragment covering all BLAST hits for a given probe sequence
+    # start index (1-based) of genomic fragment covering all BLAST hits for a given target sequence
     genomic_start <- read.csv(
         file.path(outdir, "genomic_ranges", paste(ID, ".gff3", sep="")),
         header = F,

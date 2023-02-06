@@ -16,7 +16,7 @@ groups <- strsplit(
 for (group_ID in seq_along(groups)) {
 
     if (length(groups[[group_ID]]) == 1) {
-        # start index (1-based) of genomic fragment covering all BLAST hits for a given probe sequence
+        # start index (1-based) of genomic fragment covering all BLAST hits for a given target sequence
         genomic_start <- read.csv(
             file.path(outdir, "genomic_ranges", paste(groups[[group_ID]], ".gff3", sep="")),
             header = F,
@@ -24,7 +24,7 @@ for (group_ID in seq_along(groups)) {
         )[,4]
     }
     else {
-        # start index (1-based) of genomic fragment covering all BLAST hits for a given group of probe sequences
+        # start index (1-based) of genomic fragment covering all BLAST hits for a given group of target sequences
         genomic_start <- read.csv(
             file.path(outdir, "genomic_ranges_groupwise", paste("group", group_ID, ".gff3", sep="")),
             header = F,
@@ -35,13 +35,13 @@ for (group_ID in seq_along(groups)) {
 
     # read BLAST results
     blast_hits <- NULL
-    for (probe_ID in groups[[group_ID]]) {
-        blast_hits_probe <- read.csv(
-            file.path(outdir, "hits_filtered", probe_ID),
+    for (target_ID in groups[[group_ID]]) {
+        blast_hits_target <- read.csv(
+            file.path(outdir, "hits_filtered", target_ID),
             sep = "\t",
             header = F
         )
-        blast_hits <- rbind(blast_hits, blast_hits_probe)
+        blast_hits <- rbind(blast_hits, blast_hits_target)
     }
 
     # reformat interval indices following GFF3 conventions

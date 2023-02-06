@@ -59,10 +59,10 @@ The whole pipeline can be run using the main script run.py. When using the Docke
 The latter command will list all available options:
 
 ```raw
-usage: run.py [-h] [-a ANNOTATION] [-e EVALUE] [-i] [-m MC_LENGTH] [-r] probes genome
+usage: run.py [-h] [-a ANNOTATION] [-e EVALUE] [-i] [-m MC_LENGTH] [-r] targets genome
 
 positional arguments:
-  probes                Probe sequences (FASTA file)
+  targets               Target sequences used for probe design (FASTA file)
   genome                Reference genome (FASTA file)
 
 optional arguments:
@@ -70,34 +70,34 @@ optional arguments:
   -a ANNOTATION, --annotation ANNOTATION
                         Genome annotation (GFF3 file, optional)
   -e EVALUE, --evalue EVALUE
-                        E-value threshold for saving BLAST hits (default:
-                        1e-5)
+                        E-value threshold for saving BLAST hits (default: 1e-5)
   -i, --relax_intron_def
                         Relax definition of intronic regions to include even
                         exon-overlapping parts. (legacy option)
   -m MC_LENGTH, --mc_length MC_LENGTH
-                        Probes with multi-copy regions of at least MC_LENGTH
-                        bp will be discarded. (default: 15)
+                        Targets with multi-copy regions of at least MC_LENGTH bp
+                        will be discarded. (default: 15)
   -r, --run_all         (Re)run all intermediate steps. This may be useful, if
                         previous runs have been interrupted.
+
 ```
 
-As a minimum, two FASTA files, i.e., probe sequences and reference genome, are required to run the pipeline.
+As a minimum, two FASTA files, i.e., target sequences and reference genome, are required to run the pipeline.
 If an additional GFF3 file comprising exon information is provided via the `-a` option, intronic regions will be highlighted as uppercase in the created MSAs.
-In this case, intronic bases located between consecutive BLAST hits of the same probe sequence will also be reported in the tabular output file (summary.txt).
+In this case, intronic bases located between consecutive BLAST hits of the same target sequence (not to be confused with "subject sequences" of BLAST!) will also be reported in the tabular output file (summary.txt).
 
 **NOTE**:
 - The main script run.py has to be executed **inside the LoCoLotive directory**. When using the Docker image, all input files must also be placed in this directory!
-- If MC_LENGTH is too high, it is more likely that, in the final MSAs (produced by MAFFT), parts of probe sequences will be aligned to different reference positions than suggested by BLAST, possibly requiring manual correction. However, summary.txt will not be affected by this problem.
+- If MC_LENGTH is too high, it is more likely that, in the final MSAs (produced by MAFFT), parts of target sequences will be aligned to different reference positions than suggested by BLAST, possibly requiring manual correction. However, summary.txt will not be affected by this problem.
 
 ## Example 1
 
 ### Input preparation
 
-For illustration, we will use LoCoLotive to filter Compositae-specific probe sequences (Mandel et al. 2014). Genome assembly ASM311234v1 (Shen et al. 2018) for *Artemisia annua* will be used as an annotated reference.
+For illustration, we will use LoCoLotive to filter Compositae-specific target sequences (Mandel et al. 2014). Genome assembly ASM311234v1 (Shen et al. 2018) for *Artemisia annua* will be used as an annotated reference.
 
 1. Download reference genome from NCBI: https://www.ncbi.nlm.nih.gov/data-hub/assembly/GCA_003112345.1/ (download "Genomic sequence (FASTA)" and "Annotated features (GFF3)" and extract the files from the download archive)
-2. Download probe sequences, more precisely the source ESTs used for probe design: https://raw.githubusercontent.com/Smithsonian/Compositae-COS-workflow/master/COS_sunf_lett_saff_all.fasta
+2. Download target sequences, i.e., the source ESTs used for probe design: https://raw.githubusercontent.com/Smithsonian/Compositae-COS-workflow/master/COS_sunf_lett_saff_all.fasta
 3. Move/copy both FASTA files and the GFF file into the LoCoLotive directory.
 
 To avoid redundant loci, we will only use source ESTs from sunflower.
@@ -124,20 +124,20 @@ The screen output of the above command should be similar to the following:
 ```raw
 check input files...
 extract intronic regions...
+
 create BLAST database...
 
-
-Building a new DB, current time: 04/21/2022 05:59:01
+Building a new DB, current time: 01/06/2023 00:00:00
 New DB name:   /home/uli/LoCoLotive/sunf/GCA_003112345.1_ASM311234v1_genomic/GCA_003112345.1_ASM311234v1_genomic.fna
-New DB title:  ../GCA_003112345.1_ASM311234v1_genomic.fna
+New DB title:  GCA_003112345.1_ASM311234v1_genomic.fna
 Sequence type: Nucleotide
 Keep MBits: T
 Maximum file size: 2000000000B
-Adding sequences from FASTA; added 39400 sequences in 23.1302 seconds.
+Adding sequences from FASTA; added 39400 sequences in 21.1611 seconds.
 
-BLAST probe sequences against reference genome (this may take some time)...
+BLAST target sequences against reference genome (this may take some time)...
 
-filter probe sequences:
+filter target sequences:
 
 remove query IDs with less than 2 blast hits...
 [########################################] 1046 of 1046 processed
@@ -155,27 +155,27 @@ remove query IDs with multi-copy regions of at least 15 bp...
 [########################################] 103 of 103 processed
 39 discarded
 
-number of BLAST hits per probe sequence after filtering:
-2 hits: 43 probes
-3 hits: 9 probes
-4 hits: 5 probes
-5 hits: 5 probes
-6 hits: 1 probes
-7 hits: 1 probes
+number of BLAST hits per target sequence after filtering:
+2 hits: 43 targets
+3 hits: 9 targets
+4 hits: 5 targets
+5 hits: 5 targets
+6 hits: 1 targets
+7 hits: 1 targets
 
 create alignments...
-index file ../GCA_003112345.1_ASM311234v1_genomic.fna.fai not found, generating...
-index file ../sunf.fasta.fai not found, generating...
+index file GCA_003112345.1_ASM311234v1_genomic.fna.fai not found, generating...
+index file sunf.fasta.fai not found, generating...
 [########################################] 64 of 64 processed
 
 summarize results...
 ```
 
-In this case, 64 out of 1046 probe sequences have passed the filtering steps.
+In this case, 64 out of 1046 target sequences have passed the filtering steps.
 
 ### Output
 
-The outputs of the pipeline are stored in a directory whose name corresponds to the used probe sequence file:
+The outputs of the pipeline are stored in a directory whose name corresponds to the used target sequence file:
 
 ```raw
 sunf
@@ -183,11 +183,12 @@ sunf
 │   ├── e_thresh_1e-5
 │   │   ├── mc_thresh_15
 │   │   │   ├── alignments [64 files]
-│   │   │   ├── genomic_ranges [64 files]
-│   │   │   ├── hits_filtered [64 files]
 │   │   │   ├── query_coverage [64 files]
-│   │   │   ├── query_intervals [64 files]
+│   │   │   ├── hits_filtered [64 files]
+│   │   │   ├── overlapping_loci.txt
+│   │   │   ├── groups_of_overlapping_loci.txt
 │   │   │   ├── filtering.log
+│   │   │   ├── mafft.log
 │   │   │   ├── hits_filtered.csv
 │   │   │   └── summary.txt
 │   │   └── blast_hits.txt
@@ -202,7 +203,7 @@ sunf
 └── sunf.md5
 ```
 
-The most relevant outputs are the MSAs in the "alignments" directory and "summary.txt", a tab-delimited table summarizing important information about each probe sequence that has passed the filtering steps.
+The most relevant outputs are the MSAs in the "alignments" directory and "summary.txt", a tab-delimited table summarizing important information about each target sequence that has passed the filtering steps.
 
 summary.txt looks as follows:
 
@@ -218,7 +219,7 @@ At3g10330sunfQHF9F04_yg_ab1   271   2  82                      82
 At4g36440sunfQHK9D01_yg_ab1   230   2  93                      83
 ```
 
-- column 1: probe sequence ID
+- column 1: target sequence ID
 - column 2: alignment length
 - column 3: number of BLAST hits
 - column 4: distance between consecutive BLAST hits [bp]
@@ -234,10 +235,11 @@ For source EST *At2g40690sunfQHB1g06_yg_ab1* (see above for comparison), the out
 The first sequence is part of the referene genome while the other ones represent matched parts of *At2g40690sunfQHB1g06_yg_ab1*.
 Note that the latter sequences have been reverse-complemented as indicated by the minus signs.
 
-To quickly inspect which parts of a probe sequence have been matched by BLAST, you can have a look at the files in "query_coverage".
-The other sub-directories, namely "hits_filtered", "genomic_ranges" and "query_intervals" contain intermediate results and are no longer needed except for debugging purposes. For each of the discarded probe sequences, "filtering.log" lists why it has been discarded.
+To quickly inspect which parts of a target sequence have been aligned by BLAST, you can have a look at the files in "query_coverage".
+"hits_filtered" contains intermediate results and is no longer needed except for debugging purposes. For each of the discarded target sequences, "filtering.log" lists why it has been discarded.
+Here, overlapping_loci.txt and groups_of_overlapping_loci.txt are irrelevant. (see Example 2 for further explanation)
 
-If the pipeline is again applied to the same probe sequences, but using another reference or different parameter settings, a new branch will be added to the output directory tree.
+If the pipeline is again applied to the same target sequences, but using another reference or different parameter settings, a new branch will be added to the output directory tree.
 For instance, after a second run with a lower MC_LENGTH setting 
 
 ```raw
@@ -252,20 +254,22 @@ sunf
 │   ├── e_thresh_1e-5
 │   │   ├── mc_thresh_10
 │   │   │   ├── alignments [61 files]
-│   │   │   ├── genomic_ranges [61 files]
-│   │   │   ├── hits_filtered [61 files]
 │   │   │   ├── query_coverage [61 files]
-│   │   │   ├── query_intervals [61 files]
+│   │   │   ├── hits_filtered [61 files]
+│   │   │   ├── overlapping_loci.txt
+│   │   │   ├── groups_of_overlapping_loci.txt
 │   │   │   ├── filtering.log
+│   │   │   ├── mafft.log
 │   │   │   ├── hits_filtered.csv
 │   │   │   └── summary.txt
 │   │   ├── mc_thresh_15
 │   │   │   ├── alignments [64 files]
-│   │   │   ├── genomic_ranges [64 files]
-│   │   │   ├── hits_filtered [64 files]
 │   │   │   ├── query_coverage [64 files]
-│   │   │   ├── query_intervals [64 files]
+│   │   │   ├── hits_filtered [64 files]
+│   │   │   ├── overlapping_loci.txt
+│   │   │   ├── groups_of_overlapping_loci.txt
 │   │   │   ├── filtering.log
+│   │   │   ├── mafft.log
 │   │   │   ├── hits_filtered.csv
 │   │   │   └── summary.txt
 │   │   └── blast_hits.txt
@@ -280,7 +284,7 @@ sunf
 └── sunf.md5
 ```
 
-For the second run, only 61 probe sequences have passed the filtering steps.
+For the second run, only 61 target sequences have passed the filtering steps.
 
 Note that the second command also runs much faster because upstream results (e.g. BLAST results) generated by the first run are reused. If necessary, this behavior can be altered using the `-r`/`--run_all` option.
 

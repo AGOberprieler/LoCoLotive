@@ -36,7 +36,7 @@ tail -n+2 "$infile" \
         print >> outdir"/hits_filtered/"$1
     }'
 
-# Filter probes:
+# Filter target sequences:
 
 shopt -s nullglob
 
@@ -140,8 +140,8 @@ if [ -z "$(ls -A "${outdir}"/hits_filtered)" ]; then
 fi
 
 # print info
-echo "number of BLAST hits per probe sequence after filtering:"
-wc -l "${outdir}/hits_filtered"/* | head -n-1 | awk '{print $1}' | sort -n | uniq -c | awk '{print $2" hits: "$1" probes"}'
+echo "number of BLAST hits per target sequence after filtering:"
+wc -l "${outdir}/hits_filtered"/* | head -n-1 | awk '{print $1}' | sort -n | uniq -c | awk '{print $2" hits: "$1" targets"}'
 
 # summarize filtered blast hits, prepare input for alignments_multi.sh
 

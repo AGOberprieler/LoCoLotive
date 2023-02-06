@@ -1,6 +1,6 @@
 #!/bin/bash
 
-usage="usage: ./alignments_multi.sh <probes FASTA> <genome FASTA> <output directory> [<intronic regions BED>]"
+usage="usage: ./alignments_multi.sh <targets FASTA> <genome FASTA> <output directory> [<intronic regions BED>]"
 
 mafft_timeout="15s"
 max_introns=5000 # skip intron highlighting if exceeded
@@ -12,7 +12,7 @@ then
     exit 1
 fi
 
-probes=$1
+targets=$1
 genome=$2
 outdir=$3
 intronic=$4
@@ -79,7 +79,7 @@ do
 
     bedtools getfasta \
         -s \
-        -fi "$probes" \
+        -fi "$targets" \
         -bed "${outdir}/query_intervals/${id}.gff3" \
         -fo "${outdir}/query_sequences/${id}.fasta"
 
@@ -88,7 +88,7 @@ do
 
     mv "${outdir}/temp.fasta" "${outdir}/query_sequences/${id}.fasta"
 
-    echo -e "probe ID: $id\n" >> "${outdir}/mafft.log"
+    echo -e "target ID: $id\n" >> "${outdir}/mafft.log"
 
     # align genomic and query sequences
     ###################################
@@ -131,7 +131,7 @@ do
     echo -e "\n\n-------------\n\n" >> "${outdir}/mafft.log"
 
     # visualize query (marker) coverage
-    fasta_formatter -i "$probes" | grep "^>${id}$" -A1 > "${outdir}/temp.fasta"
+    fasta_formatter -i "$targets" | grep "^>${id}$" -A1 > "${outdir}/temp.fasta"
     ./query_cov.py "${outdir}/temp.fasta" "${outdir}/query_intervals/${id}.gff3" > "${outdir}/query_coverage/${id}.fasta"
 
     progress_bar "$iter" "$i_max" 40 processed
@@ -376,7 +376,7 @@ fi
 
 # final cleanup
 rm -rf "$outdir"/{genomic_sequences,query_sequences,genomic_ranges,query_intervals,temp.fasta,temp.bed,introns.tmp,mafft_input.tmp,summary.tmp} 2> /dev/null
-rm -f "${probes}.fai" "${genome}.fai" 2> /dev/null
+rm -f "${targets}.fai" "${genome}.fai" 2> /dev/null
 if grep -q "," "${outdir}/groups_of_overlapping_loci.txt"
 then
     rm -rf "$outdir"/{genomic_sequences_groupwise,genomic_ranges_groupwise,ranges.tmp,queries.tmp,summary_groupwise.tmp} 2> /dev/null

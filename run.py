@@ -55,8 +55,8 @@ def main():
 
     # obligate parameters:
     parser.add_argument(
-        "probes",
-        help = "Probe sequences (FASTA file)"
+        "targets",
+        help = "Target sequences used for probe design (FASTA file)"
     )
 
     parser.add_argument(
@@ -92,7 +92,7 @@ def main():
         required = False,
         type = int,
         default = 15,
-        help = "Probes with multi-copy regions of at least MC_LENGTH bp will be discarded. (default: 15)"
+        help = "Targets with multi-copy regions of at least MC_LENGTH bp will be discarded. (default: 15)"
     )
 
     parser.add_argument(
@@ -110,7 +110,7 @@ def main():
         ".FASTA", ".FNA", ".FFN", ".FAA", ".FRN", ".FA", ".FAS"
     )
 
-    for seq in ["genome", "probes"]:
+    for seq in ["genome", "targets"]:
         _, ext = os.path.splitext(getattr(cfg, seq))
 
         if ext not in fasta_extensions:
@@ -118,10 +118,10 @@ def main():
 
     genome_fname = os.path.split(cfg.genome)[1]
     genome_name = os.path.splitext(os.path.split(cfg.genome)[1])[0]
-    probes_name = os.path.splitext(os.path.split(cfg.probes)[1])[0]
+    targets_name = os.path.splitext(os.path.split(cfg.targets)[1])[0]
     os.makedirs(
         os.path.join(
-            probes_name,
+            targets_name,
             genome_name,
             "e_thresh_" + cfg.evalue,
             "mc_thresh_" + str(cfg.mc_length)
@@ -134,8 +134,8 @@ def main():
 
     print("check input files...")
 
-    md5file = os.path.join(probes_name, f"{probes_name}.md5")
-    md5 = md5sum(cfg.probes)
+    md5file = os.path.join(targets_name, f"{targets_name}.md5")
+    md5 = md5sum(cfg.targets)
 
     if not os.path.isfile(md5file):
         with open(md5file, "w") as f:
@@ -145,7 +145,7 @@ def main():
             md5_old = f.read()
 
         if md5 != md5_old:
-            print(f"\nWARNING: {cfg.probes} has changed!\nThis may lead to inconsistent results/subdirectories in {probes_name}/.")
+            print(f"\nWARNING: {cfg.targets} has changed!\nThis may lead to inconsistent results/subdirectories in {targets_name}/.")
             if not confirmation("Do you want to proceed? (existing checksums will be overwritten)"):
                 sys.exit()
             else:
@@ -153,7 +153,7 @@ def main():
                     f.write(md5)
 
 
-    md5file = os.path.join(probes_name, genome_name, f"{genome_name}.md5")
+    md5file = os.path.join(targets_name, genome_name, f"{genome_name}.md5")
     md5 = md5sum(cfg.genome)
 
     if not os.path.isfile(md5file):
@@ -164,7 +164,7 @@ def main():
             md5_old = f.read()
 
         if md5 != md5_old:
-            print(f"\nWARNING: {cfg.genome} has changed!\nThis may lead to inconsistent results/subdirectories in {os.path.join(probes_name, genome_name)}/.")
+            print(f"\nWARNING: {cfg.genome} has changed!\nThis may lead to inconsistent results/subdirectories in {os.path.join(targets_name, genome_name)}/.")
             if not confirmation("Do you want to proceed? (existing checksums will be overwritten)"):
                 sys.exit()
             else:
@@ -173,7 +173,7 @@ def main():
 
 
     if cfg.annotation:
-        md5file = os.path.join(probes_name, genome_name, f"{genome_name}_ann.md5")
+        md5file = os.path.join(targets_name, genome_name, f"{genome_name}_ann.md5")
         md5 = md5sum(cfg.annotation)
 
         if not os.path.isfile(md5file):
@@ -184,7 +184,7 @@ def main():
                 md5_old = f.read()
 
             if md5 != md5_old:
-                print(f"\nWARNING: {cfg.annotation} has changed!\nThis may lead to inconsistent results/subdirectories in {os.path.join(probes_name, genome_name)}/.")
+                print(f"\nWARNING: {cfg.annotation} has changed!\nThis may lead to inconsistent results/subdirectories in {os.path.join(targets_name, genome_name)}/.")
                 if not confirmation("Do you want to proceed? (existing checksums will be overwritten)"):
                     sys.exit()
                 else:
@@ -197,8 +197,8 @@ def main():
     if cfg.annotation:
         if (
             cfg.run_all
-            or not os.path.isfile(os.path.join(probes_name, genome_name, "intronic.BED"))
-            or not os.path.isfile(os.path.join(probes_name, genome_name, "intronic_strict.BED"))
+            or not os.path.isfile(os.path.join(targets_name, genome_name, "intronic.BED"))
+            or not os.path.isfile(os.path.join(targets_name, genome_name, "intronic_strict.BED"))
         ):
             print("extract intronic regions...")
 
@@ -206,7 +206,7 @@ def main():
                 [
                     "./extract_introns.sh",
                     cfg.annotation,
-                    os.path.join(probes_name, genome_name)
+                    os.path.join(targets_name, genome_name)
                 ],
                 stderr=subprocess.STDOUT,
                 stdout=sys.stdout,
@@ -217,7 +217,7 @@ def main():
 
 
     db_files = [
-        os.path.join(probes_name, genome_name, genome_fname + ext)
+        os.path.join(targets_name, genome_name, genome_fname + ext)
         for ext in [".nhr", ".nin", ".nsq"]
     ]
 
@@ -230,7 +230,7 @@ def main():
                 "-in", cfg.genome,
                 "-input_type", "fasta",
                 "-out", os.path.join(
-                    probes_name,
+                    targets_name,
                     genome_name,
                     genome_name + os.path.splitext(cfg.genome)[1]
                 ),
@@ -246,17 +246,17 @@ def main():
         print("existing BLAST database found")
 
     if cfg.run_all or not os.path.isfile(
-        os.path.join(probes_name, genome_name, "e_thresh_" + cfg.evalue, "blast_hits.txt")
+        os.path.join(targets_name, genome_name, "e_thresh_" + cfg.evalue, "blast_hits.txt")
     ):
-        print("\nBLAST probe sequences against reference genome (this may take some time)...")
+        print("\nBLAST target sequences against reference genome (this may take some time)...")
 
-        with open(os.path.join(probes_name, genome_name, "e_thresh_" + cfg.evalue, "blast_hits.txt"), "wb") as f:
+        with open(os.path.join(targets_name, genome_name, "e_thresh_" + cfg.evalue, "blast_hits.txt"), "wb") as f:
             subprocess.run(
                 [
                     "blastn",
                     "-task", "dc-megablast",
-                    "-query", cfg.probes,
-                    "-db", os.path.join(probes_name, genome_name, genome_fname),
+                    "-query", cfg.targets,
+                    "-db", os.path.join(targets_name, genome_name, genome_fname),
                     "-evalue", cfg.evalue,
                     "-outfmt", "7 qseqid qstart qend sseqid sstart send sstrand bitscore evalue pident length qcovhsp mismatch gapopen gaps btop"
                 ],
@@ -267,12 +267,12 @@ def main():
     else:
         print("existing BLAST results found")
 
-    print("\nfilter probe sequences:\n")
+    print("\nfilter target sequences:\n")
     subprocess.run(
         [
             "./filter.sh",
-            os.path.join(probes_name, genome_name, "e_thresh_" + cfg.evalue, "blast_hits.txt"),
-            os.path.join(probes_name, genome_name, "e_thresh_" + cfg.evalue, "mc_thresh_" + str(cfg.mc_length)),
+            os.path.join(targets_name, genome_name, "e_thresh_" + cfg.evalue, "blast_hits.txt"),
+            os.path.join(targets_name, genome_name, "e_thresh_" + cfg.evalue, "mc_thresh_" + str(cfg.mc_length)),
             str(cfg.mc_length)
         ],
         stderr=subprocess.STDOUT,
@@ -280,7 +280,7 @@ def main():
         check=True
     )
 
-    if 0 == len(os.listdir(os.path.join(probes_name, genome_name, "e_thresh_" + cfg.evalue, "mc_thresh_" + str(cfg.mc_length), "hits_filtered"))):
+    if 0 == len(os.listdir(os.path.join(targets_name, genome_name, "e_thresh_" + cfg.evalue, "mc_thresh_" + str(cfg.mc_length), "hits_filtered"))):
         print("\n\nWARNING: No loci left, abort.")
         sys.exit()
 
@@ -289,11 +289,11 @@ def main():
         subprocess.run(
             [
                 "./alignments_multi.sh",
-                cfg.probes,
+                cfg.targets,
                 cfg.genome,
-                os.path.join(probes_name, genome_name, "e_thresh_" + cfg.evalue, "mc_thresh_" + str(cfg.mc_length)),
+                os.path.join(targets_name, genome_name, "e_thresh_" + cfg.evalue, "mc_thresh_" + str(cfg.mc_length)),
                 os.path.join(
-                    probes_name,
+                    targets_name,
                     genome_name,
                     "intronic.BED" if cfg.relax_intron_def else "intronic_strict.BED"
                 )
@@ -306,9 +306,9 @@ def main():
         subprocess.run(
             [
                 "./alignments_multi.sh",
-                cfg.probes,
+                cfg.targets,
                 cfg.genome,
-                os.path.join(probes_name, genome_name, "e_thresh_" + cfg.evalue, "mc_thresh_" + str(cfg.mc_length))
+                os.path.join(targets_name, genome_name, "e_thresh_" + cfg.evalue, "mc_thresh_" + str(cfg.mc_length))
             ],
             stderr=subprocess.STDOUT,
             stdout=sys.stdout,
