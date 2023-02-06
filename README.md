@@ -1,13 +1,13 @@
 # LoCoLotive
-In silico identification of low-copy nuclear loci based on published target capture probe sets and custom reference genomes.
+In silico identification of low-copy nuclear loci based on published target capture probe sets and arbitrary reference genomes.
 
 ## Requirements
-LoCoLotive is primarily designed to run on Linux operating systems. It depends on a on several external tools, programming languages and libraries, namely [BEDOPS](https://bedops.readthedocs.io/en/latest/), [bedtools](https://bedtools.readthedocs.io/en/latest/), [FASTX-Toolkit](http://hannonlab.cshl.edu/fastx_toolkit/), [gawk](https://www.gnu.org/software/gawk/), [GenomeTools](http://genometools.org/), [MAFFT](https://mafft.cbrc.jp/alignment/software/), [BLAST](https://blast.ncbi.nlm.nih.gov/), [python3](https://www.python.org/), [R](https://www.r-project.org/), [ape](https://cran.r-project.org/web/packages/ape/), [seqinr](https://cran.r-project.org/web/packages/seqinr/), [NumPy](https://numpy.org/) and [SciPy](https://scipy.org/citing-scipy/).
+LoCoLotive is primarily designed to run on Linux operating systems and depends on several external tools, programming languages and libraries, namely [BEDOPS](https://bedops.readthedocs.io/en/latest/), [bedtools](https://bedtools.readthedocs.io/en/latest/), [FASTX-Toolkit](http://hannonlab.cshl.edu/fastx_toolkit/), [gawk](https://www.gnu.org/software/gawk/), [GenomeTools](http://genometools.org/), [MAFFT](https://mafft.cbrc.jp/alignment/software/), [BLAST](https://blast.ncbi.nlm.nih.gov/), [python3](https://www.python.org/), [R](https://www.r-project.org/), [ape](https://cran.r-project.org/web/packages/ape/), [seqinr](https://cran.r-project.org/web/packages/seqinr/), [NumPy](https://numpy.org/) and [SciPy](https://scipy.org/citing-scipy/).
 
 There are several ways to deal with the required dependencies.
 
 ### Option 1: Manual installation
-On Debian-based distributions, LoCoLotive's dependencies can be installed using the following or similar commands. Some of them may require root privileges, which can be given by prepending "sudo".
+On Debian-based Linux distributions, LoCoLotive's dependencies can be installed using the following or similar commands. (Some of them may require root privileges, which can be given by prepending "sudo".)
 
 ```raw
 apt update && apt install bedops bedtools fastx-toolkit gawk genometools mafft ncbi-blast+ python3 r-base r-base-dev
@@ -16,22 +16,41 @@ python3 -m pip install --user scipy
 Rscript -e 'install.packages(c("ape", "seqinr"), repos="https://cloud.r-project.org")'
 ```
 
-Note: Since compatibility with arbitrary/future versions of the mentioned packages cannot be guaranteed, it is safer and therefore recommended to use either option 2 or 3 instead.
+Note: Since compatibility with arbitrary/future versions of the mentioned packages cannot be guaranteed, **it is safer and therefore recommended to use either option 2 or 3 instead**, which will provide defined and tested software versions.
 
 ### Option 2: Conda environment
-On Debian-based distributions, LoCoLotive's dependencies can be installed using the following or similar commands. Some of them may require root privileges, which can be given by prepending "sudo".
 
+Using the Conda package management system, it is possible to easily create an appropriate environment for running LoCoLotive without system-wide installations and thus without root privileges. If not already installed, Conda (here [Miniconda](https://docs.conda.io/en/main/miniconda.html)) can typically be installed using the following commands:
+```bash
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+```
+Alternatively, you may want to consider [Mambaforge](https://github.com/conda-forge/miniforge), which enables much faster package installation and is less prone to dependency conflicts. It can typically be installed with 
+```bash
+wget https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh
+bash Mambaforge-Linux-x86_64.sh
+```
 
-**Alternatively**, you can use the supplied Docker image, which already contains all dependencies required:
+Next, download LoCoLotive and enter the corresponding directory:
+```bash
+git clone https://github.com/AGOberprieler/LoCoLotive
+cd LoCoLotive
+```
 
-1. Install [Docker](https://docs.docker.com/engine/install/).
-2. Run `docker pull ul90/locolotive` to download and import the docker image.
+You can then create a Conda environment called "locolotive" with `conda env create -f environment.yml` (when using Mambaforge, simply replace `conda` by `mamba` to benefit from its improvements). Finally activate the environment by executing `conda activate locolotive` to be able to run LoCoLotive from your current terminal session. The latter step is usually necessary each time you open up a new (pseudo)terminal. Within the activated environment, commands like, e.g., `python3` (probably also installed system-wide) now point to programs from your environment, which can, e.g., be verified with `which python3`.
 
-Since compatibility with future versions of the external tools cannot be guaranteed, **it is safer and therefore recommended to use the Docker image** rather than local installations.
-Note that this image does NOT support the Windows Subsystem for Linux (WSL).
+### Option 3: Docker image
+
+For a maximum of reproducibility, you can run LoCoLotive inside a Docker image, which packages not only the above mentioned dependencies, but a complete operating system.
+
+1. Install Docker, see https://docs.docker.com/engine/install/. Typically, you also have to create and join a "docker" group, see https://docs.docker.com/engine/install/linux-postinstall/.
+2. Run `docker pull ul90/locolotive` to download and import the Docker image. Note that this image does not support the Windows Subsystem for Linux (WSL).
+
+The docker.sh script will be used run LoCoLotive using the image. (see below)
+
 
 ## Usage
-First download LoCoLotive and move into the LoCoLotive directory:
+If not already done, download LoCoLotive and move into the LoCoLotive directory:
 ```bash
 git clone https://github.com/AGOberprieler/LoCoLotive
 cd LoCoLotive
