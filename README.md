@@ -97,8 +97,18 @@ In this case, intronic bases located between consecutive BLAST hits of the same 
 For illustration, we will use LoCoLotive to filter Compositae-specific target sequences (Mandel et al. 2014). Genome assembly ASM311234v1 (Shen et al. 2018) for *Artemisia annua* will be used as an annotated reference.
 
 1. Download reference genome from NCBI: https://www.ncbi.nlm.nih.gov/data-hub/assembly/GCA_003112345.1/ (download "Genomic sequence (FASTA)" and "Annotated features (GFF3)" and extract the files from the download archive)
-2. Download target sequences, i.e., the source ESTs used for probe design: https://raw.githubusercontent.com/Smithsonian/Compositae-COS-workflow/master/COS_sunf_lett_saff_all.fasta
-3. Move/copy both FASTA files and the GFF file into the LoCoLotive directory.
+
+   Alternatively, you can download them from their FTP directory (or also via rsync; for further information, see https://www.ncbi.nlm.nih.gov/genome/doc/ftpfaq/), e.g. with
+   ```bash
+   wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/003/112/345/GCA_003112345.1_ASM311234v1/GCA_003112345.1_ASM311234v1_genomic.fna.gz
+   wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/003/112/345/GCA_003112345.1_ASM311234v1/GCA_003112345.1_ASM311234v1_genomic.gff.gz
+   gunzip GCA_003112345.1_ASM311234v1_genomic.{fna,gff}.gz
+   ```
+3. Download target sequences, i.e., the source ESTs used for probe design:
+   ```bash
+   wget https://raw.githubusercontent.com/Smithsonian/Compositae-COS-workflow/master/COS_sunf_lett_saff_all.fasta
+   ```
+5. Move/copy both FASTA files and the GFF file into the LoCoLotive directory.
 
 To avoid redundant loci, we will only use source ESTs from sunflower.
 These can be extracted with
