@@ -397,7 +397,8 @@ If there are at least two overlapping candidate loci, LoCoLotive detects disjunc
    At3g19910saffCART_TINC_CSA1_4513  4345  6  598,69,124,2605,83           598,69,124,2541,83           4
    ...
    ```
-   - column 6: group ID
+   - columns 1-5: as in Example 1
+   - column 6: group ID (you may need to scroll to the right)
 
 4. Additional MSAs are generated for each group, e.g.
 
