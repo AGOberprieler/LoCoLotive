@@ -114,7 +114,7 @@ Before running the pipeline, it is generally a good idea to ensure that the inpu
 Now, we will run LoCoLotive with default parameters (adjust the file names/paths if necessary):
 
 ```bash
-./run.py -a genomic.gff sunf.fasta GCA_003112345.1_ASM311234v1_genomic.fna
+./run.py -a GCA_003112345.1_ASM311234v1_genomic.gff sunf.fasta GCA_003112345.1_ASM311234v1_genomic.fna
 ```
 
 (Remember to activate your Conda environment before or to prepend `./docker.sh` if appropriate.)
@@ -237,7 +237,7 @@ Note that the latter sequences have been reverse-complemented as indicated by th
 
 To quickly inspect which parts of a target sequence have been aligned by BLAST, you can have a look at the files in "query_coverage".
 "hits_filtered" contains intermediate results and is no longer needed except for debugging purposes. For each of the discarded target sequences, "filtering.log" lists why it has been discarded.
-Here, overlapping_loci.txt and groups_of_overlapping_loci.txt are irrelevant. (see Example 2 for further explanation)
+Here, the files overlapping_loci.txt and groups_of_overlapping_loci.txt are irrelevant. (see Example 2 for further explanation)
 
 If the pipeline is again applied to the same target sequences, but using another reference or different parameter settings, a new branch will be added to the output directory tree.
 For instance, after a second run with a lower MC_LENGTH setting 
@@ -294,7 +294,7 @@ Note that the second command also runs much faster because upstream results (e.g
 In the first example, we only used ESTs from sunflower as input target sequences. We will now run a similar analysis using the complete set of ESTs to demonstrate LoCoLotives behavior in presence of overlapping/redundant loci:
 
 ```bash
-./run.py -a genomic.gff COS_sunf_lett_saff_all.fasta GCA_003112345.1_ASM311234v1_genomic.fna
+./run.py -a GCA_003112345.1_ASM311234v1_genomic.gff COS_sunf_lett_saff_all.fasta GCA_003112345.1_ASM311234v1_genomic.fna
 ```
 
 Screen output:
@@ -395,7 +395,7 @@ At3g19910saffCART_TINC_CSA1_4513  4345  6  598,69,124,2605,83           598,69,1
 
 This is almost identical to the MSA shown in example analysis 1, however, comprising redundant target sequences.
 
-5. In analogy to *summary_groupwise.txt*, an additional output file *summary_groupwise.txt* provides an overview over each group of loci.
+5. In analogy to *summary.txt*, an additional output file *summary_groupwise.txt* provides an overview over each group of loci.
 ```raw
 2   6639  10  3153,175,79,554,107,86,201,220,919  3153,173,79,554,106,86,201,179,707
 1   6244  9   1790,83,1488,535,340,297,74,785     1721,58,1488,452,340,297,51,738
@@ -410,5 +410,5 @@ This is almost identical to the MSA shown in example analysis 1, however, compri
 - column 4: distance between consecutive groups of BLAST hits [bp]
 - column 5: intronic base pairs between consecutive groups of BLAST hits
 
-Using the latter outputs, in our example, it may be more comfortable to inspect 81 effective loci (groups) instead of 156 potentially overlapping ones.
-LoCoLotive's grouping behavior is especially useful when it is unclear, which target sequences should be included in the analysis.
+Using the latter outputs, in our example, it may be more convenient to inspect 81 effective loci (groups) instead of 156 potentially overlapping ones.
+LoCoLotive's grouping behavior is particularly useful when it is unclear, which target sequences should be included in the analysis.
