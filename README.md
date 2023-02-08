@@ -49,7 +49,7 @@ The docker.sh script will be used run LoCoLotive using the image. (see below)
 
 
 ## Usage
-If not already done, download LoCoLotive and move into the LoCoLotive directory:
+If not already done, download LoCoLotive and **move into the LoCoLotive directory**:
 ```bash
 git clone https://github.com/AGOberprieler/LoCoLotive
 cd LoCoLotive
