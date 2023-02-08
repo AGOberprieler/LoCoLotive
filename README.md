@@ -82,7 +82,7 @@ optional arguments:
 
 ```
 
-As a minimum, two FASTA files, i.e., target sequences and reference genome, are required to run the pipeline.
+As a minimum, two FASTA files, i.e., target sequences (defined as the exonic sequences used to design the shorter, actual capture probes; e.g. ESTs) and a reference genome, are required to run the pipeline.
 If an additional GFF3 file comprising exon information is provided via the `-a` option, intronic regions will be highlighted as uppercase in the created MSAs.
 In this case, intronic bases located between consecutive BLAST hits of the same target sequence (not to be confused with "subject sequences" of BLAST!) will also be reported in the tabular output file (summary.txt).
 
@@ -228,7 +228,7 @@ At4g36440sunfQHK9D01_yg_ab1   230   2  93                      83
 Note that columns 4 and 5 refer to the original BLAST hits rather than the MSAs produced by MAFFT.
 If no exon annotation is provided, column 5 will only contain zeros. 
 
-For source EST *At2g40690sunfQHB1g06_yg_ab1* (see above for comparison), the output MSA looks as follows:
+For source EST *At2g40690sunfQHB1g06_yg_ab1* (see above for comparison), the output MSA looks as follows (dots are used as placeholders):
 
 ![At2g40690sunfQHB1g06_yg_ab1_short.png](images/At2g40690sunfQHB1g06_yg_ab1_short.png)
 
