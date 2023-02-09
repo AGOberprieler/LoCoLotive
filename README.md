@@ -253,7 +253,7 @@ If the pipeline is again applied to the same target sequences, but using another
 For instance, after a second run with a lower MC_LENGTH setting 
 
 ```bash
-./docker.sh ./run.py -m 10 -a genomic.gff sunf.fasta GCA_003112345.1_ASM311234v1_genomic.fna
+./run.py -m 10 -a GCA_003112345.1_ASM311234v1_genomic.gff sunf.fasta GCA_003112345.1_ASM311234v1_genomic.fna
 ```
 
 which implies a stricter filtering, the following directories will be present:
@@ -423,3 +423,22 @@ If there are at least two overlapping candidate loci, LoCoLotive detects disjunc
 
 Using the latter outputs, in our example, it may be more convenient to inspect 81 effective loci (groups) instead of 156 potentially overlapping ones.
 LoCoLotive's grouping behavior is particularly useful when it is unclear, which target sequences should be included in the analysis.
+
+
+## Example 3 (Angiosperms353)
+
+As opposed to the formerly used, family-specific probe set, we will now utilize target sequences of the universal Angiosperms353 probe kit (Johnson et al. 2019). The required data can be easily downloaded and prepared using the script *prepare_angiosperms353.sh*:
+```bash
+./prepare_angiosperms353.sh
+```
+
+You can now use the whole *Angiosperms353_targetSequences.fasta* file as input target sequences or only use a subset of it to speed up computations. To filter the target sequences for specific orders, families etc., we provide the script *filter_angiosperms353.sh*. We will use the latter to extract only sequences belonging to the order Asterales:
+```bash
+./filter_angiosperms353.sh 2 Asterales > Asterales.fasta
+```
+(Here, "2" stands for order, for possible choices see *abbreviations.txt*. For further usage information run `./filter_angiosperms353.sh` without arguments. The filtered sequences can be counted with `grep -c "^>" Asterales.fasta`.)
+
+We again use the Artemisia reference genome from the the previous examples:
+```bash
+./run.py -a GCA_003112345.1_ASM311234v1_genomic.gff Asterales.fasta GCA_003112345.1_ASM311234v1_genomic.fna
+```
