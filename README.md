@@ -498,5 +498,6 @@ overlapping loci found, compute group-wise alignments...
 
 summarize results...
 ```
+Here, we obtained 24 candidate loci forming 21 disjunct groups.
 
 As an alternative to the target sequences of Angiosperms353, one could try to use a subset of the much larger mega353 target file (McLay et al. 2021). The latter can be downloaded at https://github.com/chrisjackson-pellicle/NewTargets; there is also a script to filter for specific taxon groups.
