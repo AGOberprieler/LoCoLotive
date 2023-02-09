@@ -442,3 +442,61 @@ We again use the Artemisia reference genome from the the previous examples:
 ```bash
 ./run.py -a GCA_003112345.1_ASM311234v1_genomic.gff Asterales.fasta GCA_003112345.1_ASM311234v1_genomic.fna
 ```
+
+Screen output:
+```raw
+check input files...
+extract intronic regions...
+
+create BLAST database...
+
+Building a new DB, current time: 02/09/2023 15:40:01
+New DB name:   /home/uli/LoCoLotive/Asterales/GCA_003112345.1_ASM311234v1_genomic/GCA_003112345.1_ASM311234v1_genomic.fna
+New DB title:  GCA_003112345.1_ASM311234v1_genomic.fna
+Sequence type: Nucleotide
+Keep MBits: T
+Maximum file size: 2000000000B
+Adding sequences from FASTA; added 39400 sequences in 16.4577 seconds.
+
+BLAST target sequences against reference genome (this may take some time)...
+
+filter target sequences:
+
+remove query IDs with less than 2 blast hits...
+[########################################] 188 of 188 processed
+2 discarded
+
+remove query IDs with hits on different chromosomes/scaffolds/contigs etc. ...
+[########################################] 186 of 186 processed
+141 discarded
+
+remove query IDs with hits on both strands...
+[########################################] 45 of 45 processed
+0 discarded
+
+remove query IDs with multi-copy regions of at least 15 bp...
+[########################################] 45 of 45 processed
+21 discarded
+
+number of BLAST hits per target sequence after filtering:
+2 hits: 5 targets
+3 hits: 5 targets
+4 hits: 4 targets
+5 hits: 2 targets
+6 hits: 4 targets
+8 hits: 1 targets
+9 hits: 1 targets
+10 hits: 1 targets
+11 hits: 1 targets
+
+create alignments...
+index file GCA_003112345.1_ASM311234v1_genomic.fna.fai not found, generating...
+index file Asterales.fasta.fai not found, generating...
+[########################################] 24 of 24 processed
+overlapping loci found, compute group-wise alignments...
+[########################################] 21 of 21 processed
+
+summarize results...
+```
+
+As an alternative to the target sequences of Angiosperms353, one could try to use a subset of the much larger mega353 target file (McLay et al. 2021). The latter can be downloaded at https://github.com/chrisjackson-pellicle/NewTargets; there is also a script to filter for specific taxon groups.
