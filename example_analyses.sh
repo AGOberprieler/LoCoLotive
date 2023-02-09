@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 genomes="\
 Cinnamomum_micranthum_f_kanehirae  Laurales     1  https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/003/546/025/GCA_003546025.1_ASBRC_Ckan_1.0/GCA_003546025.1_ASBRC_Ckan_1.0_genomic.fna.gz
@@ -65,7 +65,7 @@ mv tmp.fasta Angiosperms353_targetSequences.fasta
 
 # download information about sequence IDs
 wget https://github.com/mossmatters/Angiosperms353/raw/master/support_files/fine_annotations_MJ.txt
-cp fine_annotations_MJ.txt abbreviations.txt
+tail -n+2 fine_annotations_MJ.txt > abbreviations.txt
 
 # add missing information about some abbreviations
 # (species assignment according to https://github.com/GrosseLab/OneKP-gene-family-evo/blob/master/data/phylogeny/species_dictionary.tsv)
@@ -104,7 +104,7 @@ while IFS=$'\n' read genome; do
     rm "${order}.fasta" "${order}.fasta.fai" 2> /dev/null
 
     gawk -v "o=$order" '
-    ARGIND==1 && NR>1 {
+    ARGIND==1 {
         order[$1] = $2
     }
     ARGIND==2 {
