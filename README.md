@@ -36,7 +36,7 @@ git clone https://github.com/AGOberprieler/LoCoLotive
 cd LoCoLotive
 ```
 
-You can then create a Conda environment called "locolotive" with `conda env create -f environment.yml` (when using Mambaforge, simply replace `conda` with `mamba` to benefit from its improvements). Finally activate the environment by executing `conda activate locolotive` to be able to run LoCoLotive from your current terminal session. The latter step is usually necessary each time you open up a new (pseudo)terminal. Within the activated environment, commands like, e.g., `python3` (probably also installed system-wide) now point to programs from your environment, which can, e.g., be verified with `which python3`.
+You can then create a Conda environment called "locolotive" with `conda env create -f environment.yml` (when using Mambaforge, simply replace `conda` with `mamba` to benefit from its speed improvements). Finally, activate the environment by executing `conda activate locolotive` to be able to run LoCoLotive from your current terminal session. The latter step is usually necessary each time you open up a new (pseudo)terminal. Within the activated environment, commands like, e.g., `python3` (probably also installed system-wide) now point to programs from your environment, which can, e.g., be verified with `which python3`.
 
 ### Option 3: Docker image
 
