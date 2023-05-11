@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7927320.svg)](https://doi.org/10.5281/zenodo.7927320)
+
 # LoCoLotive
 In silico identification of low-copy nuclear loci based on published target capture probe sets and arbitrary reference genomes.
 
